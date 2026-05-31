@@ -138,7 +138,8 @@
   <div class="row">TIME <span id="curTime">0.00</span>s</div>
   <div class="row best">BEST <span id="bestTime">--</span></div>
   <div class="row" style="opacity:.7">CP <span id="cpNum">0</span>/<span id="cpTot">6</span></div>
-  <div class="row" style="color:#ffd700">🪙 <span id="coinCount">0</span> / 15</div>
+  <div class="row" style="color:#ffd700">🪙 <span id="coinCount">0</span> / 30</div>
+  <div class="row" id="timerRow" style="font-size:16px;font-weight:800">⏱ <span id="timeLeft">65</span>s</div>
   <div class="row" id="ghostRow" style="color:#46e0ff;opacity:0">GHOST <span id="ghostGap">--</span></div>
   <div class="row" id="ghostBoard" style="font-size:13px;letter-spacing:.5px;opacity:0"></div>
 </div>
@@ -768,14 +769,17 @@ buildGwanganBridge();
 /* =====================================================================
    3.6) 코인 시스템 — 트랙을 따라 수집 가능한 코인 배치
    ===================================================================== */
-const COIN_COUNT = 15;
-const COIN_RADIUS = 18;
-const COIN_COLLECT_DIST = 80;
+const COIN_COUNT = 30;
+const COIN_RADIUS = 30;
+const COIN_COLLECT_DIST = 100;
+const TIME_LIMIT = 65; // seconds
+let gameTimer = TIME_LIMIT;
+let gameOver = false;
 const coins = [];
 let coinScore = 0;
 
 function buildCoins(){
-  const coinGeo = new THREE.CylinderGeometry(COIN_RADIUS, COIN_RADIUS, 4, 16);
+  const coinGeo = new THREE.CylinderGeometry(COIN_RADIUS, COIN_RADIUS, 8, 16);
   const coinMat = new THREE.MeshStandardMaterial({
     color: 0xffd700, metalness: 0.9, roughness: 0.1,
     emissive: 0xffa000, emissiveIntensity: 0.3
@@ -824,6 +828,8 @@ function updateCoins(dt){
 
 function resetCoins(){
   coinScore = 0;
+  gameTimer = TIME_LIMIT;
+  gameOver = false;
   for(const c of coins){
     c.collected = false;
     c.mesh.visible = true;
@@ -1023,7 +1029,7 @@ function resetCar(){
 function simulate(dt){
   // --- 입력 (카운트다운 중 잠금) ---
   let throttle = 0, steer = 0, driftKey = false;
-  if (!inputLocked) {
+  if (!inputLocked && !gameOver) {
     throttle = (keys.KeyW||keys.ArrowUp?1:0) - (keys.KeyS||keys.ArrowDown?1:0);
     steer    = (keys.KeyD||keys.ArrowRight?1:0) - (keys.KeyA||keys.ArrowLeft?1:0);
     driftKey = !!keys.Space;
@@ -1227,7 +1233,7 @@ function updateHUD(sim){
       { icon:'🏖️', name:'Haeundae Surf Lesson ₩5,000 off', cat:'Travel', color:'#ff6b9d' },
       { icon:'🌃', name:'Gwangan Bridge Night Cruise 10% off', cat:'Travel', color:'#ff6b9d' },
     ];
-    const prizeCount = coinScore >= 12 ? 6 : coinScore >= 8 ? 5 : coinScore >= 4 ? 4 : 3;
+    const prizeCount = coinScore >= 24 ? 6 : coinScore >= 18 ? 5 : coinScore >= 10 ? 4 : 3;
     const prizes = allPrizes.slice(0, prizeCount);
 
     const fs = document.createElement('div'); fs.id = 'finishScreen';
@@ -1440,10 +1446,46 @@ function loop(){
   Ghost._prevLapTime = lapTime;
 
   updateCoins(dt);
+
+  // Timer countdown
+  if(!car.finished && !gameOver){
+    gameTimer -= dt;
+    if(gameTimer <= 0){
+      gameTimer = 0;
+      gameOver = true;
+      // Game Over screen
+      if(!document.getElementById('gameOverScreen')){
+        const go = document.createElement('div'); go.id = 'gameOverScreen';
+        go.style.cssText = 'position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.9);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px)';
+        go.innerHTML = `<div style="text-align:center;max-width:400px;padding:32px">
+          <div style="font-size:56px;margin-bottom:8px">⏰</div>
+          <h2 style="font-size:36px;font-weight:900;color:#ff4444;margin-bottom:8px">TIME OVER</h2>
+          <p style="color:#ffd700;font-size:16px;margin-bottom:8px">🪙 ${coinScore} / ${COIN_COUNT} coins collected</p>
+          <p style="color:#aaa;font-size:14px;margin-bottom:8px">CP ${cpVisited.filter(Boolean).length} / ${CP_COUNT} · Lap ${Math.min(car.lap,3)} / 3</p>
+          <p style="color:#666;font-size:12px;margin-bottom:24px">Finish 3 laps within ${TIME_LIMIT}s to earn rewards!</p>
+          <button onclick="document.getElementById('gameOverScreen').remove();resetCar();" style="padding:14px 32px;border-radius:99px;background:#ff4444;color:#fff;font-weight:700;border:none;cursor:pointer;font-size:16px">Try again</button>
+        </div>`;
+        document.body.appendChild(go);
+      }
+    }
+  }
+
   updateKartVisual(sim, dt);
   updateCamera(sim.fwd, sim.speed, dt);
   updateHUD(sim);
   $('coinCount').textContent = coinScore;
+
+  // Timer HUD
+  const tl = Math.ceil(gameTimer);
+  $('timeLeft').textContent = tl;
+  const tr = $('timerRow');
+  if(tl <= 10 && !car.finished && !gameOver){
+    tr.style.color = '#ff4444';
+    tr.style.fontSize = '18px';
+  } else {
+    tr.style.color = '#fff';
+    tr.style.fontSize = '16px';
+  }
 
   renderer.render(scene, camera);
 }
