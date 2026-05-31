@@ -661,49 +661,104 @@ buildGamcheonVillage();
 // 3) 광안대교 — 현수교 곡선 + 케이블
 function buildGwanganBridge(){
   const grp = new THREE.Group();
-  const bridgeColor = 0x3a5a7a;
-  const cableColor = 0x5ae0c4;
-  const deckLen = 7000, deckY = 180, towerH = 1100;
+  const deckColor = 0xc0c8d0;
+  const towerColor = 0xd0d8e0;
+  const cableColor = 0x88ddff;
+  const lightColor = 0xff99aa;
+  const deckLen = 8000, deckY = 200, towerH = 1400;
+  const bz = 8500; // 바다 쪽
 
-  // 도로 데크
-  const deck = new THREE.Mesh(
-    new THREE.BoxGeometry(deckLen, 24, 180),
-    new THREE.MeshLambertMaterial({ color: bridgeColor })
+  // 바다 면 (다리 아래)
+  const sea = new THREE.Mesh(
+    new THREE.PlaneGeometry(12000, 4000),
+    new THREE.MeshLambertMaterial({ color: 0x1a3a5a, transparent: true, opacity: 0.8 })
   );
-  deck.position.set(0, deckY, 9000);
-  grp.add(deck);
+  sea.rotation.x = -Math.PI/2;
+  sea.position.set(0, 1, bz);
+  grp.add(sea);
 
-  // 타워 2개
-  for(const tx of [-1800, 1800]){
-    const tower = new THREE.Mesh(
-      new THREE.BoxGeometry(60, towerH, 60),
-      new THREE.MeshLambertMaterial({ color: bridgeColor })
-    );
-    tower.position.set(tx, deckY + towerH/2, 9000);
-    tower.castShadow = true;
-    grp.add(tower);
+  // 상판 — 2층 구조 (하부 트러스 + 상부 도로)
+  const deckLower = new THREE.Mesh(
+    new THREE.BoxGeometry(deckLen, 20, 200),
+    new THREE.MeshLambertMaterial({ color: 0x888a90 })
+  );
+  deckLower.position.set(0, deckY - 15, bz);
+  grp.add(deckLower);
+  const deckUpper = new THREE.Mesh(
+    new THREE.BoxGeometry(deckLen, 14, 240),
+    new THREE.MeshLambertMaterial({ color: deckColor })
+  );
+  deckUpper.position.set(0, deckY, bz);
+  grp.add(deckUpper);
 
-    // 케이블 (현수교 곡선)
-    for(let i=-6; i<=6; i++){
-      const cx = tx + i * 140;
-      const sag = Math.abs(i) * Math.abs(i) * 8;
-      const cable = new THREE.Mesh(
-        new THREE.CylinderGeometry(2, 2, towerH - sag, 4),
-        new THREE.MeshBasicMaterial({ color: cableColor, transparent: true, opacity: 0.5 })
+  // 주탑 2개 — A형 (약간 안쪽으로 기울어진 2본 기둥)
+  for(const tx of [-2200, 2200]){
+    for(const side of [-1, 1]){
+      const tower = new THREE.Mesh(
+        new THREE.BoxGeometry(40, towerH, 40),
+        new THREE.MeshLambertMaterial({ color: towerColor })
       );
-      cable.position.set(cx, deckY + (towerH - sag)/2, 9000);
+      tower.position.set(tx + side*40, deckY + towerH/2, bz);
+      tower.rotation.z = side * -0.03;
+      tower.castShadow = true;
+      grp.add(tower);
+    }
+    // 주탑 상단 연결보
+    const crossbar = new THREE.Mesh(
+      new THREE.BoxGeometry(100, 30, 50),
+      new THREE.MeshLambertMaterial({ color: towerColor })
+    );
+    crossbar.position.set(tx, deckY + towerH - 50, bz);
+    grp.add(crossbar);
+
+    // 현수 케이블 — 주탑에서 상판으로 비스듬히 (부채꼴)
+    for(let i=-8; i<=8; i++){
+      if(i===0) continue;
+      const dx = i * 120;
+      const topX = tx;
+      const topY = deckY + towerH - 80;
+      const botX = tx + dx;
+      const botY = deckY + 20;
+      const len = Math.hypot(topX-botX, topY-botY);
+      const ang = Math.atan2(topY-botY, topX-botX);
+      const cable = new THREE.Mesh(
+        new THREE.CylinderGeometry(1.5, 1.5, len, 4),
+        new THREE.MeshBasicMaterial({ color: cableColor, transparent: true, opacity: 0.45 })
+      );
+      cable.position.set((topX+botX)/2, (topY+botY)/2, bz);
+      cable.rotation.z = ang - Math.PI/2;
       grp.add(cable);
     }
   }
 
-  // 교각 조명
-  for(let i=-3000; i<=3000; i+=400){
-    const light = new THREE.Mesh(
-      new THREE.SphereGeometry(6, 6, 6),
-      new THREE.MeshBasicMaterial({ color: 0xff8899 })
+  // 메인 현수 케이블 (주탑 사이 곡선)
+  for(let i=0; i<=40; i++){
+    const t = i/40;
+    const x = lerp(-2200, 2200, t);
+    const sag = Math.sin(t * Math.PI) * 400;
+    const dot = new THREE.Mesh(
+      new THREE.SphereGeometry(3, 4, 4),
+      new THREE.MeshBasicMaterial({ color: cableColor, transparent: true, opacity: 0.5 })
     );
-    light.position.set(i, deckY + 16, 9000);
-    grp.add(light);
+    dot.position.set(x, deckY + towerH - 100 - sag, bz);
+    grp.add(dot);
+  }
+
+  // 데크 조명 — 따뜻한 핑크/오렌지
+  for(let i=-3500; i<=3500; i+=300){
+    const bulb = new THREE.Mesh(
+      new THREE.SphereGeometry(5, 6, 6),
+      new THREE.MeshBasicMaterial({ color: lightColor })
+    );
+    bulb.position.set(i, deckY + 12, bz);
+    grp.add(bulb);
+    // 반사 (수면 아래 희미하게)
+    const reflect = new THREE.Mesh(
+      new THREE.SphereGeometry(3, 4, 4),
+      new THREE.MeshBasicMaterial({ color: lightColor, transparent: true, opacity: 0.15 })
+    );
+    reflect.position.set(i, -5, bz);
+    grp.add(reflect);
   }
 
   scene.add(grp);
