@@ -596,35 +596,65 @@ buildMountainRidge();
 
 // 2) 감천문화마을 — 산비탈 알록달록 박스 집들
 function buildGamcheonVillage(){
-  const colors = [0x4a90d9, 0xf5c542, 0xe87d7d, 0x7bc47f, 0xf0a0c0, 0x88ccdd, 0xffaa55, 0xdddddd];
-  const baseX = -5500, baseZ = 6000, slopeAngle = 0.35;
-  for(let row=0; row<8; row++){
-    for(let col=0; col<12; col++){
-      const w = 80 + Math.random()*60;
-      const h = 60 + Math.random()*80;
-      const d = 60 + Math.random()*40;
-      const x = baseX + col * 110 + (row%2)*55 + Math.random()*20;
-      const z = baseZ + row * 90 + Math.random()*15;
-      const y = row * 80 * slopeAngle + h/2;
+  const colors = [
+    0x4a90d9, 0x3a7fc8,  // blues
+    0xf5c542, 0xffb833,  // yellows
+    0xe87d7d, 0xd45a5a,  // reds/pinks
+    0x7bc47f, 0x5aaa5e,  // greens
+    0xf0a0c0, 0xff88aa,  // pinks
+    0x88ccdd, 0x77bbcc,  // sky blues
+    0xffaa55, 0xff8833,  // oranges
+    0xccbbff, 0xeeddcc,  // lavender, cream
+  ];
+  // 트랙 코너 안쪽 — 정면에서 잘 보이는 위치
+  const baseX = 3800, baseZ = 4200;
+
+  // 산비탈 경사 베이스 (삼각형)
+  const slope = new THREE.Mesh(
+    new THREE.ConeGeometry(1800, 600, 4),
+    new THREE.MeshLambertMaterial({ color: 0x3a5030 })
+  );
+  slope.position.set(baseX + 600, 200, baseZ + 400);
+  slope.rotation.y = Math.PI / 4;
+  scene.add(slope);
+
+  // 집들 — 15행 x 16열 = 240채, 계단식
+  for(let row=0; row<15; row++){
+    const rowWidth = 16 - Math.floor(row * 0.5); // 위로 갈수록 좁아짐
+    for(let col=0; col<rowWidth; col++){
+      const w = 100 + Math.random()*70;
+      const h = 80 + Math.random()*100;
+      const d = 80 + Math.random()*50;
+      const x = baseX + col * 130 + (row%2)*65 + Math.random()*25 - (rowWidth*65);
+      const z = baseZ + row * 110 + Math.random()*20;
+      const y = row * 55 + h/2; // 계단식 높이
       const color = colors[Math.floor(Math.random()*colors.length)];
       const house = new THREE.Mesh(
         new THREE.BoxGeometry(w, h, d),
         new THREE.MeshLambertMaterial({ color })
       );
       house.position.set(x, y, z);
-      house.rotation.y = Math.random()*0.15 - 0.075;
+      house.rotation.y = Math.random()*0.2 - 0.1;
       house.castShadow = true;
       scene.add(house);
-      // 지붕 (약간 어두운 톤)
+      // 지붕
       const roof = new THREE.Mesh(
-        new THREE.BoxGeometry(w+10, 8, d+10),
-        new THREE.MeshLambertMaterial({ color: 0x555555 })
+        new THREE.BoxGeometry(w+12, 10, d+12),
+        new THREE.MeshLambertMaterial({ color: 0x444444 })
       );
-      roof.position.set(x, y + h/2 + 4, z);
+      roof.position.set(x, y + h/2 + 5, z);
       scene.add(roof);
+      // 랜덤 창문 (30% 확률)
+      if(Math.random() > 0.7){
+        const win = new THREE.Mesh(
+          new THREE.BoxGeometry(w*0.3, h*0.25, 2),
+          new THREE.MeshBasicMaterial({ color: 0xfff8dd, transparent: true, opacity: 0.6 })
+        );
+        win.position.set(x, y + h*0.1, z + d/2 + 1);
+        scene.add(win);
+      }
     }
   }
-  // "감천문화마을" 간판은 생략 — 집들 자체가 아이덴티티
 }
 buildGamcheonVillage();
 
