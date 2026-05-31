@@ -142,7 +142,7 @@
 </div>
 
 <div id="info" class="hud">
-  <div class="lap"><span id="lapNum">1</span><span style="opacity:.6;font-size:20px"> / 3 LAP</span></div>
+  <div class="lap"><span id="lapNum">1</span><span style="opacity:.6;font-size:20px"> / 1 LAP</span></div>
   <div class="row">TIME <span id="curTime">0.00</span>s</div>
   <div class="row best">BEST <span id="bestTime">--</span></div>
   <div class="row" style="opacity:.7">CP <span id="cpNum">0</span>/<span id="cpTot">6</span></div>
@@ -1183,7 +1183,7 @@ function updateProgress(){
       car.lap += 1;
       car.prog -= 1.0;
       cpVisited.fill(false);
-      if(car.lap > 3 && !car.finished){ car.finished=true; }
+      if(car.lap > 1 && !car.finished){ car.finished=true; }
     } else {
       car.prog = 0.999; // 미통과시 랩 인정 보류
     }
@@ -1212,7 +1212,7 @@ function updateHUD(sim){
   $('spd').textContent = Math.round(cmsToKph(sim.speed));
   $('driftFill').style.width = (car.driftGauge/SPEC.driftMaxGauge*100).toFixed(0)+'%';
   $('boostFill').style.width = (car.boostInit>0? car.boostTimer/car.boostInit*100:0).toFixed(0)+'%';
-  $('lapNum').textContent = Math.min(car.lap,3);
+  $('lapNum').textContent = Math.min(car.lap,1);
   $('curTime').textContent = (clock.getElapsedTime()-car.lapStart).toFixed(2);
   $('bestTime').textContent = car.best!==null ? car.best.toFixed(2)+'s' : '--';
   $('cpNum').textContent = cpVisited.filter(Boolean).length;
@@ -1476,8 +1476,8 @@ function loop(){
           <div style="font-size:56px;margin-bottom:8px">⏰</div>
           <h2 style="font-size:36px;font-weight:900;color:#ff4444;margin-bottom:8px">TIME OVER</h2>
           <p style="color:#ffd700;font-size:16px;margin-bottom:8px">🪙 ${coinScore} / ${COIN_COUNT} coins collected</p>
-          <p style="color:#aaa;font-size:14px;margin-bottom:8px">CP ${cpVisited.filter(Boolean).length} / ${CP_COUNT} · Lap ${Math.min(car.lap,3)} / 3</p>
-          <p style="color:#666;font-size:12px;margin-bottom:24px">Finish 3 laps within ${TIME_LIMIT}s to earn rewards!</p>
+          <p style="color:#aaa;font-size:14px;margin-bottom:8px">CP ${cpVisited.filter(Boolean).length} / ${CP_COUNT} · Lap ${Math.min(car.lap,1)} / 3</p>
+          <p style="color:#666;font-size:12px;margin-bottom:24px">Finish the lap within ${TIME_LIMIT}s to earn rewards!</p>
           <button onclick="document.getElementById('gameOverScreen').remove();resetCar();" style="padding:14px 32px;border-radius:99px;background:#ff4444;color:#fff;font-weight:700;border:none;cursor:pointer;font-size:16px">Try again</button>
         </div>`;
         document.body.appendChild(go);
