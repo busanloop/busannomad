@@ -90,6 +90,13 @@
   #trafficLight { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%);
     z-index: 55; display: none; flex-direction: column; align-items: center; gap: 16px; }
   #trafficLight.show { display: flex; }
+  #bigCountdown { position: fixed; top: 40%; left: 50%; transform: translate(-50%,-50%);
+    z-index: 45; font-size: 120px; font-weight: 900; color: #ff3333;
+    text-shadow: 0 0 60px rgba(255,50,50,.8), 0 0 120px rgba(255,50,50,.4);
+    opacity: 0; transition: opacity .15s; pointer-events: none; }
+  #bigCountdown.show { opacity: 1; }
+  @keyframes countPulse { 0% { transform: translate(-50%,-50%) scale(1.3); } 100% { transform: translate(-50%,-50%) scale(1); } }
+  #bigCountdown.pulse { animation: countPulse .3s ease-out; }
   .tl-row { display: flex; gap: 20px; }
   .tl-bulb { width: 60px; height: 60px; border-radius: 50%; background: #222;
     border: 3px solid #444; transition: background .15s, box-shadow .15s; }
@@ -124,6 +131,7 @@
   <div id="goText">GO!</div>
 </div>
 
+<div id="bigCountdown"></div>
 <div id="touchControls">
   <div id="joyZone"><div id="joyKnob"></div></div>
   <div id="touchBtns">
@@ -542,10 +550,17 @@ function scatterBusanProps(scene, curve){
   // 🗼 등대 — 코너 바깥 바위 위
   { const s = sp(0.62, -(EDGE + 520)); buildLighthouse(scene, s.p.x, 0, s.p.z); }
 
-  // 🍢 포장마차 야시장 — 갓길, 입구가 트랙을 향하도록
-  [[0.08, 1], [0.30, -1], [0.78, 1]].forEach(([u, side]) => {
-    const s = sp(u, side * (EDGE + 260));
-    buildFoodStall(scene, s.p.x, 0, s.p.z, { rotationY: s.ang + (side > 0 ? -Math.PI / 2 : Math.PI / 2) });
+  // 🍢 포장마차 거리 — 일렬로 줄지어 (부산 야시장)
+  // 메인 거리: u=0.25~0.35 구간에 7개 일렬
+  for(let i=0; i<7; i++){
+    const u = 0.25 + i * 0.015;
+    const s = sp(u, EDGE + 220 + i*30);
+    buildFoodStall(scene, s.p.x, 0, s.p.z, { rotationY: s.ang - Math.PI/2, scale: 0.9 + Math.random()*0.2 });
+  }
+  // 반대편에도 2~3개
+  [[0.60, -1], [0.65, -1], [0.70, -1]].forEach(([u, side]) => {
+    const s = sp(u, side * (EDGE + 250));
+    buildFoodStall(scene, s.p.x, 0, s.p.z, { rotationY: s.ang + Math.PI/2 });
   });
 
   // 🛥️ 어선 + 바다 패치 — 한쪽 먼 바깥(바다 영역)
@@ -772,7 +787,7 @@ buildGwanganBridge();
 const COIN_COUNT = 30;
 const COIN_RADIUS = 30;
 const COIN_COLLECT_DIST = 100;
-const TIME_LIMIT = 65; // seconds
+const TIME_LIMIT = 25; // seconds
 let gameTimer = TIME_LIMIT;
 let gameOver = false;
 const coins = [];
@@ -1479,12 +1494,25 @@ function loop(){
   const tl = Math.ceil(gameTimer);
   $('timeLeft').textContent = tl;
   const tr = $('timerRow');
-  if(tl <= 10 && !car.finished && !gameOver){
-    tr.style.color = '#ff4444';
+  const bc = $('bigCountdown');
+  if(tl <= 5 && tl > 0 && !car.finished && !gameOver){
+    tr.style.color = '#ff3333';
+    tr.style.fontSize = '20px';
+    // Big center countdown
+    const num = tl.toString();
+    if(bc.textContent !== num){
+      bc.textContent = num;
+      bc.className = 'show pulse';
+      setTimeout(()=>{ bc.className = 'show'; }, 300);
+    }
+  } else if(tl <= 10 && !car.finished && !gameOver){
+    tr.style.color = '#ff6644';
     tr.style.fontSize = '18px';
+    bc.className = '';
   } else {
     tr.style.color = '#fff';
     tr.style.fontSize = '16px';
+    bc.className = '';
   }
 
   renderer.render(scene, camera);
