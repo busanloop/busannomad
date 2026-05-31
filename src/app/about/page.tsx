@@ -6,6 +6,44 @@ export default function AboutPage() {
         How we built a city-wide Learn · Work · Play platform for digital nomads
       </p>
 
+      {/* Why Busan */}
+      <section className="mb-10">
+        <h2 className="text-sm font-semibold text-emerald-400 uppercase tracking-wider mb-4">
+          Why Busan
+        </h2>
+        <div className="space-y-4 text-sm text-zinc-300 leading-relaxed">
+          <p>
+            Most people who live by the ocean in Busan have never really <em>seen</em> it.
+            It&apos;s always there — so close it becomes invisible.
+          </p>
+          <p>
+            Nomads have a similar problem. We can work from anywhere, but we never stop.
+            Always connected, always on — yet somehow disconnected from ourselves.
+          </p>
+          <p>
+            Busan taught me how to stop.
+          </p>
+          <p className="text-zinc-400">
+            The silence at Beomeosa temple before the city wakes up. Walking the Geumjeongsan ridge
+            with no destination. Sitting in a hot spring after a long run along Oncheoncheon, feeling
+            nothing but warm water and cold air. And the people you meet on those paths — not at a
+            conference, not on a screen, but on a trail, at a pojangmacha, watching the bridge lights
+            come on over Gwangalli.
+          </p>
+          <p>
+            <strong className="text-white">Play is not entertainment. It&apos;s reconnecting with yourself.</strong>
+          </p>
+          <p className="text-zinc-400">
+            Not the loop of commute and routine, but a day that wakes up all five senses —
+            a morning run by the stream, recovery in a hot spring, deep work at a quiet cafe,
+            and a walk home along the coast as the sun sets.
+          </p>
+          <p>
+            That&apos;s what we&apos;re building. <strong className="text-emerald-400">Learn · Work · Play.</strong>
+          </p>
+        </div>
+      </section>
+
       {/* LWP Identity */}
       <section className="mb-8 p-5 rounded-2xl bg-gradient-to-r from-purple-950/20 to-blue-950/20 border border-purple-900/20">
         <h2 className="text-sm font-semibold text-purple-400 uppercase tracking-wider mb-3">
