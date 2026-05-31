@@ -505,32 +505,7 @@ function buildFoodStall(scene, x, y, z, opts={}){
   return place(scene, g, x, y, z, opts);
 }
 
-// 3) 야자수 — 해운대
-function buildPalmTree(scene, x, y, z, opts={}){
-  const g=new THREE.Group(); const segN=8, segH=120;
-  let cx=0, cz=0, curY=0, lean=0;
-  for(let i=0;i<segN;i++){
-    const r0=lerp(40,24,i/segN), r1=lerp(40,24,(i+1)/segN);
-    lean+=14; cx+=lean*0.18;
-    const seg=add(g, new THREE.CylinderGeometry(r1,r0,segH,10), mat(C.wood), cx, curY+segH/2, cz);
-    seg.rotation.z=-i*0.035; curY+=segH;
-  }
-  const crown=new THREE.Vector3(cx+20, curY+10, cz);
-  const leaves=9;
-  for(let i=0;i<leaves;i++){
-    const ang=(i/leaves)*Math.PI*2;
-    const leaf=add(g, new THREE.BoxGeometry(34,8,360), mat(i%2?C.leaf:C.leafDark),
-                   crown.x, crown.y, crown.z, false);
-    leaf.geometry.translate(0,0,160);
-    leaf.position.set(crown.x, crown.y, crown.z);
-    leaf.rotation.y=ang; leaf.rotation.x=0.5; leaf.castShadow=true;
-  }
-  for(const d of [[-30,-10],[25,15],[0,-28]])
-    add(g, new THREE.SphereGeometry(20,10,8), mat(C.coconut), crown.x+d[0], crown.y-25, crown.z+d[1]);
-  return place(scene, g, x, y, z, opts);
-}
-
-// 4) 어선 — 바다 위
+// 3) 어선 — 바다 위
 function buildFishingBoat(scene, x, y, z, opts={}){
   const g=new THREE.Group(); const L=640, BW=220, BH=150;
   add(g, new THREE.BoxGeometry(BW,BH,L), mat(C.hullBlue), 0,BH/2,0);
@@ -552,25 +527,6 @@ function buildFishingBoat(scene, x, y, z, opts={}){
   return place(scene, g, x, y, z, opts);
 }
 
-// 5) 토리이 — 후쿠오카 연결 상징
-function buildTorii(scene, x, y, z, opts={}){
-  const g=new THREE.Group(); const span=760, pillarH=1000, pr=38;
-  for(const sx of [-1,1]){
-    add(g, new THREE.CylinderGeometry(pr*0.9,pr,pillarH,16), mat(C.toriiRed), sx*span/2, pillarH/2, 0);
-    add(g, new THREE.CylinderGeometry(pr+14,pr+18,70,16), mat(C.toriiDark), sx*span/2, 35, 0);
-  }
-  add(g, new THREE.BoxGeometry(span+150,60,64), mat(C.toriiRed), 0, pillarH*0.74, 0);
-  add(g, new THREE.BoxGeometry(46, pillarH*0.26-30, 56), mat(C.toriiRed), 0, pillarH*0.87, 0);
-  const topY=pillarH+30;
-  add(g, new THREE.BoxGeometry(span+230,52,78), mat(C.toriiRed), 0, topY, 0);
-  add(g, new THREE.BoxGeometry(span+320,64,104), mat(C.toriiDark), 0, topY+58, 0);
-  for(const sx of [-1,1]){
-    const cap=add(g, new THREE.BoxGeometry(120,64,104), mat(C.toriiDark), sx*(span/2+160), topY+70, 0);
-    cap.rotation.z=sx*-0.18;
-  }
-  return place(scene, g, x, y, z, opts);
-}
-
 // ── 트랙 곡선을 따라 자동 배치 ───────────────────────────────────────────────
 function scatterBusanProps(scene, curve){
   const EDGE = ROAD_HALF + 60;               // 도로 가장자리
@@ -582,9 +538,6 @@ function scatterBusanProps(scene, curve){
     return { p: p.clone().addScaledVector(n, off), ang: Math.atan2(t.x, t.z) };
   };
 
-  // ⛩️ 토리이 — 트랙을 가로지르는 게이트(차가 통과). 도로폭보다 넓게 scale.
-  { const s = sp(0.50, 0); buildTorii(scene, s.p.x, 0, s.p.z, { rotationY: s.ang, scale: 2.3 }); }
-
   // 🗼 등대 — 코너 바깥 바위 위
   { const s = sp(0.62, -(EDGE + 520)); buildLighthouse(scene, s.p.x, 0, s.p.z); }
 
@@ -593,15 +546,6 @@ function scatterBusanProps(scene, curve){
     const s = sp(u, side * (EDGE + 260));
     buildFoodStall(scene, s.p.x, 0, s.p.z, { rotationY: s.ang + (side > 0 ? -Math.PI / 2 : Math.PI / 2) });
   });
-
-  // 🌴 야자수 — 양쪽 갓길에 줄지어 (히어로 소품 위치는 회피)
-  for (let i = 0; i < 20; i++) {
-    const u = i / 20;
-    if (Math.abs(u - 0.50) < 0.03 || Math.abs(u - 0.62) < 0.04) continue;
-    const side = (i % 2) ? 1 : -1;
-    const s = sp(u, side * (EDGE + 200 + (i % 3) * 60));
-    buildPalmTree(scene, s.p.x, 0, s.p.z, { scale: 0.8 + (i % 3) * 0.15, rotationY: i * 0.7 });
-  }
 
   // 🛥️ 어선 + 바다 패치 — 한쪽 먼 바깥(바다 영역)
   [[0.20, 2600], [0.45, 3000], [0.70, 2700]].forEach(([u, off]) => {
