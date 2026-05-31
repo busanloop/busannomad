@@ -1041,6 +1041,20 @@ function resetCar(){
   if(typeof resetCoins === 'function') resetCoins();
 }
 
+function restartGame(){
+  // Remove overlays
+  const fs = document.getElementById('finishScreen'); if(fs) fs.remove();
+  const go = document.getElementById('gameOverScreen'); if(go) go.remove();
+  // Reset state
+  resetCar();
+  inputLocked = false;
+  gameOver = false;
+  gameTimer = TIME_LIMIT;
+  // Re-trigger countdown
+  phase = 'attract';
+  startGame();
+}
+
 function simulate(dt){
   // --- 입력 (카운트다운 중 잠금) ---
   let throttle = 0, steer = 0, driftKey = false;
@@ -1285,7 +1299,7 @@ function updateHUD(sim){
       <p style="font-size:9px;color:#555;margin-top:8px">* Demo rewards. Redeem at F22 Coworking in Busan.</p>
 
       <div style="margin-top:16px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
-        <button onclick="document.getElementById('finishScreen').remove();resetCar();" style="padding:10px 20px;border-radius:99px;background:#4ecdc4;color:#000;font-weight:700;border:none;cursor:pointer;font-size:13px">Race again</button>
+        <button onclick="restartGame()" style="padding:10px 20px;border-radius:99px;background:#4ecdc4;color:#000;font-weight:700;border:none;cursor:pointer;font-size:13px">Race again</button>
         <a href="/discover" style="padding:10px 20px;border-radius:99px;background:#4ade80;color:#000;font-weight:700;text-decoration:none;font-size:13px">Visit spots →</a>
         <a href="/pass" style="padding:10px 20px;border-radius:99px;background:#ffd166;color:#000;font-weight:700;text-decoration:none;font-size:13px">Get Pass →</a>
       </div>
@@ -1446,7 +1460,7 @@ function loop(){
     return;
   }
 
-  if(keys.KeyR){ resetCar(); keys.KeyR=false; }
+  if(keys.KeyR){ restartGame(); keys.KeyR=false; }
 
   updateProgress();
   const sim = simulate(dt);
@@ -1478,7 +1492,7 @@ function loop(){
           <p style="color:#ffd700;font-size:16px;margin-bottom:8px">🪙 ${coinScore} / ${COIN_COUNT} coins collected</p>
           <p style="color:#aaa;font-size:14px;margin-bottom:8px">CP ${cpVisited.filter(Boolean).length} / ${CP_COUNT} · Lap ${Math.min(car.lap,1)} / 3</p>
           <p style="color:#666;font-size:12px;margin-bottom:24px">Finish the lap within ${TIME_LIMIT}s to earn rewards!</p>
-          <button onclick="document.getElementById('gameOverScreen').remove();resetCar();" style="padding:14px 32px;border-radius:99px;background:#ff4444;color:#fff;font-weight:700;border:none;cursor:pointer;font-size:16px">Try again</button>
+          <button onclick="restartGame()" style="padding:14px 32px;border-radius:99px;background:#ff4444;color:#fff;font-weight:700;border:none;cursor:pointer;font-size:16px">Try again</button>
         </div>`;
         document.body.appendChild(go);
       }
