@@ -179,7 +179,7 @@ export default function Home() {
         <div className="grid grid-cols-3 gap-2">
           {[
             { num: "3", label: "Live APIs" },
-            { num: "15", label: "Coins" },
+            { num: "30", label: "Coins" },
             { num: "6", label: "Spots" },
           ].map((s) => (
             <div key={s.label} className="text-center p-3 rounded-xl bg-zinc-900 border border-zinc-800">
@@ -199,7 +199,7 @@ export default function Home() {
           {[
             { name: "Three.js", desc: "Drift Racing Engine", color: "text-cyan-400" },
             { name: "MyRealTrip", desc: "2,221 Products", color: "text-rose-400" },
-            { name: "GGUI", desc: "Agent MCP", color: "text-amber-400" },
+            { name: "API Fuse", desc: "KakaoMap Search", color: "text-amber-400" },
           ].map((api) => (
             <div key={api.name} className="text-center p-3 rounded-xl bg-zinc-900 border border-zinc-800">
               <p className={`text-sm font-bold ${api.color}`}>{api.name}</p>
