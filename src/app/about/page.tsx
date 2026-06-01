@@ -1,10 +1,48 @@
 export default function AboutPage() {
   return (
     <div className="px-6 py-8 max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold mb-2">About Nomad Loop</h1>
+      <h1 className="text-2xl font-bold mb-2">About BusanNomad</h1>
       <p className="text-sm text-zinc-500 mb-8">
         How we built a city-wide Learn · Work · Play platform for digital nomads
       </p>
+
+      {/* Tech Stats */}
+      <section className="mb-10">
+        <h2 className="text-sm font-semibold text-cyan-400 uppercase tracking-wider mb-4">
+          Platform Stats
+        </h2>
+        <div className="grid grid-cols-3 gap-2">
+          {[
+            { num: "3", label: "Live APIs" },
+            { num: "30", label: "Coins" },
+            { num: "6", label: "Spots" },
+          ].map((s) => (
+            <div key={s.label} className="text-center p-3 rounded-xl bg-zinc-900 border border-zinc-800">
+              <p className="text-lg font-bold text-cyan-400">{s.num}</p>
+              <p className="text-[10px] text-zinc-500">{s.label}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* API Integration Cards */}
+      <section className="mb-10">
+        <h2 className="text-sm font-semibold text-cyan-400 uppercase tracking-wider mb-4">
+          API Integrations (Summary)
+        </h2>
+        <div className="grid grid-cols-3 gap-2">
+          {[
+            { name: "Three.js", desc: "Drift Racing Engine", color: "text-cyan-400" },
+            { name: "MyRealTrip", desc: "2,221 Products", color: "text-rose-400" },
+            { name: "API Fuse", desc: "KakaoMap Search", color: "text-amber-400" },
+          ].map((api) => (
+            <div key={api.name} className="text-center p-3 rounded-xl bg-zinc-900 border border-zinc-800">
+              <p className={`text-sm font-bold ${api.color}`}>{api.name}</p>
+              <p className="text-[10px] text-zinc-500 mt-0.5">{api.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
 
       {/* Why Busan */}
       <section className="mb-10">

@@ -14,9 +14,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Nomad Loop — Learn · Work · Play",
+  title: "BusanNomad — Learn · Work · Play",
   description:
-    "Race through Busan, discover real spots, and use them with one city pass. Learn · Work · Play for digital nomads.",
+    "One pass. Three verified spaces. Coworking, fitness, and a cafe across Busan. Learn · Work · Play for digital nomads.",
 };
 
 export default function RootLayout({

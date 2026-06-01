@@ -1,12 +1,30 @@
 "use client";
 
 import Link from "next/link";
-import dynamic from "next/dynamic";
 
-const KartViewer = dynamic(
-  () => import("@/components/kart-viewer").then((mod) => mod.KartViewer),
-  { ssr: false, loading: () => <div className="w-full h-[300px] sm:h-[400px] flex items-center justify-center text-zinc-600">Loading 3D...</div> }
-);
+const verifiedSpots = [
+  {
+    name: "F22 Coworking",
+    type: "Work",
+    desc: "300sqm lounge & meeting rooms, 24/7 open",
+    address: "Gwanganli, Busan",
+    color: "bg-blue-500/10 text-blue-400",
+  },
+  {
+    name: "Fitness & Wellness",
+    type: "Play",
+    desc: "Gym, recovery, and wellness programs",
+    address: "10 min walk from F22",
+    color: "bg-emerald-500/10 text-emerald-400",
+  },
+  {
+    name: "Nomad Community Cafe",
+    type: "Learn",
+    desc: "Community meetups and networking",
+    address: "Gwanganli, Busan",
+    color: "bg-purple-500/10 text-purple-400",
+  },
+];
 
 const features = [
   {
@@ -29,17 +47,11 @@ const features = [
   },
 ];
 
-const spots = [
-  { name: "F22 Coworking", type: "Work", address: "Gwanganli, Busan" },
-  { name: "Fitness & Wellness", type: "Play", address: "10 min walk from F22" },
-  { name: "Nomad Community", type: "Learn", address: "Gwanganli, Busan" },
-];
-
 export default function Home() {
   return (
     <div className="flex flex-col">
       {/* Hero */}
-      <section className="relative min-h-[70vh] flex flex-col items-center justify-center px-6 text-center overflow-hidden">
+      <section className="relative min-h-[60vh] flex flex-col items-center justify-center px-6 text-center overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-emerald-950/30 via-zinc-950/80 to-zinc-950" />
         <div className="relative z-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm mb-6">
@@ -47,62 +59,75 @@ export default function Home() {
             Busan, South Korea
           </div>
           <h1 className="text-4xl sm:text-5xl font-bold tracking-tight mb-4">
-            Nomad Loop
+            BusanNomad
           </h1>
-          <p className="text-lg text-zinc-400 max-w-md mx-auto mb-2">
-            One pass. Learn · Work · Play.
+          <p className="text-lg text-zinc-300 max-w-md mx-auto mb-2">
+            One pass. Three verified spaces. Learn · Work · Play.
           </p>
           <p className="text-sm text-zinc-500 max-w-sm mx-auto mb-8">
-            Race through Busan in a kart, discover real spots along the way,
-            and use them with a single city pass.
+            Not the commute — a life that wakes your senses. Coworking, fitness, and a cafe across Busan, on a single pass.
           </p>
-          <KartViewer />
 
           {/* How it works */}
           <div className="mb-6 p-3 rounded-xl bg-zinc-900/60 border border-zinc-800 max-w-sm mx-auto">
             <p className="text-xs text-zinc-400 text-center mb-2">How it works</p>
             <div className="flex items-center justify-center gap-1 text-xs text-zinc-500">
-              <span className="px-2 py-0.5 rounded bg-cyan-500/20 text-cyan-400 font-medium">1. Race</span>
+              <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-medium">1. Discover</span>
               <span>→</span>
-              <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-medium">2. Discover</span>
+              <span className="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 font-medium">2. Get Pass</span>
               <span>→</span>
-              <span className="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 font-medium">3. Pass</span>
+              <span className="px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 font-medium">3. Use</span>
             </div>
           </div>
 
           <div className="flex flex-wrap gap-3 justify-center">
             <Link
-              href="/race"
-              className="px-8 py-3.5 rounded-full bg-cyan-500 text-black font-bold hover:bg-cyan-400 transition-colors text-lg"
+              href="/pass"
+              className="px-8 py-3.5 rounded-full bg-emerald-500 text-black font-bold hover:bg-emerald-400 transition-colors text-lg"
             >
-              Race Busan →
+              Get the Pass
             </Link>
-          </div>
-          <div className="flex gap-3 justify-center mt-3">
             <Link
               href="/discover"
-              className="px-5 py-2 rounded-full bg-emerald-500/10 text-emerald-400 text-sm font-medium border border-emerald-500/20 hover:bg-emerald-500/20 transition-colors"
+              className="px-8 py-3.5 rounded-full bg-zinc-800 text-zinc-200 font-bold border border-zinc-700 hover:bg-zinc-700 transition-colors text-lg"
             >
-              Discover
-            </Link>
-            <Link
-              href="/pass"
-              className="px-5 py-2 rounded-full bg-zinc-800 text-zinc-300 text-sm font-medium border border-zinc-700 hover:bg-zinc-700 transition-colors"
-            >
-              Get Pass
-            </Link>
-            <Link
-              href="/about"
-              className="px-5 py-2 rounded-full bg-zinc-800 text-zinc-300 text-sm font-medium border border-zinc-700 hover:bg-zinc-700 transition-colors"
-            >
-              Tech
+              See the spots
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Learn · Work · Play */}
+      {/* Verified Spots */}
       <section className="px-6 py-12">
+        <h2 className="text-sm font-semibold text-zinc-500 uppercase tracking-wider mb-2 text-center">
+          3 Verified Spaces
+        </h2>
+        <p className="text-xs text-zinc-600 text-center mb-6">
+          Real places, visited and confirmed. Not a listing — a curated pass.
+        </p>
+        <div className="space-y-3 max-w-lg mx-auto">
+          {verifiedSpots.map((s) => (
+            <div
+              key={s.name}
+              className="flex items-start gap-4 p-4 rounded-xl bg-zinc-900 border border-zinc-800"
+            >
+              <span
+                className={`shrink-0 text-xs px-2.5 py-1 rounded-full font-medium ${s.color}`}
+              >
+                {s.type}
+              </span>
+              <div>
+                <p className="font-medium">{s.name}</p>
+                <p className="text-sm text-zinc-400 mt-0.5">{s.desc}</p>
+                <p className="text-xs text-zinc-600 mt-1">{s.address}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Learn · Work · Play */}
+      <section className="px-6 py-8">
         <h2 className="text-sm font-semibold text-zinc-500 uppercase tracking-wider mb-6 text-center">
           Learn · Work · Play
         </h2>
@@ -128,37 +153,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Spots */}
-      <section className="px-6 py-8">
-        <h2 className="text-sm font-semibold text-zinc-500 uppercase tracking-wider mb-4">
-          Available Spots
-        </h2>
-        <div className="space-y-3">
-          {spots.map((s) => (
-            <div
-              key={s.name}
-              className="flex items-center justify-between p-4 rounded-xl bg-zinc-900 border border-zinc-800"
-            >
-              <div>
-                <p className="font-medium">{s.name}</p>
-                <p className="text-sm text-zinc-500">{s.address}</p>
-              </div>
-              <span
-                className={`text-xs px-2.5 py-1 rounded-full font-medium ${
-                  s.type === "Work"
-                    ? "bg-blue-500/10 text-blue-400"
-                    : s.type === "Play"
-                    ? "bg-emerald-500/10 text-emerald-400"
-                    : "bg-purple-500/10 text-purple-400"
-                }`}
-              >
-                {s.type}
-              </span>
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* The city is the campus */}
       <section className="px-6 py-8">
         <div className="p-6 rounded-2xl bg-gradient-to-r from-emerald-950/50 to-blue-950/50 border border-emerald-900/30">
@@ -171,42 +165,14 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Tech Stats */}
-      <section className="px-6 py-8">
-        <h2 className="text-sm font-semibold text-zinc-500 uppercase tracking-wider mb-4 text-center">
-          Built with Custom Drift Physics
-        </h2>
-        <div className="grid grid-cols-3 gap-2">
-          {[
-            { num: "3", label: "Live APIs" },
-            { num: "30", label: "Coins" },
-            { num: "6", label: "Spots" },
-          ].map((s) => (
-            <div key={s.label} className="text-center p-3 rounded-xl bg-zinc-900 border border-zinc-800">
-              <p className="text-lg font-bold text-cyan-400">{s.num}</p>
-              <p className="text-[10px] text-zinc-500">{s.label}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* API Integrations */}
-      <section className="px-6 pb-8">
-        <h2 className="text-sm font-semibold text-zinc-500 uppercase tracking-wider mb-4 text-center">
-          API Integrations
-        </h2>
-        <div className="grid grid-cols-3 gap-2">
-          {[
-            { name: "Three.js", desc: "Drift Racing Engine", color: "text-cyan-400" },
-            { name: "MyRealTrip", desc: "2,221 Products", color: "text-rose-400" },
-            { name: "API Fuse", desc: "KakaoMap Search", color: "text-amber-400" },
-          ].map((api) => (
-            <div key={api.name} className="text-center p-3 rounded-xl bg-zinc-900 border border-zinc-800">
-              <p className={`text-sm font-bold ${api.color}`}>{api.name}</p>
-              <p className="text-[10px] text-zinc-500 mt-0.5">{api.desc}</p>
-            </div>
-          ))}
-        </div>
+      {/* Footer link to race game */}
+      <section className="px-6 py-8 text-center">
+        <Link
+          href="/race"
+          className="text-sm text-zinc-600 hover:text-zinc-400 transition-colors"
+        >
+          Try the Busan drift game →
+        </Link>
       </section>
     </div>
   );

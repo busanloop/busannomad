@@ -12,10 +12,10 @@ export default function RacePage() {
         href="/"
         className="fixed top-4 left-4 z-50 bg-zinc-900/80 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm border border-zinc-700 hover:bg-zinc-800 transition-colors"
       >
-        ← Back to Nomad Loop
+        ← Back to BusanNomad
       </a>
       <div className="fixed top-4 right-4 z-50 bg-zinc-900/80 backdrop-blur-sm px-3 py-1.5 rounded-full border border-zinc-700">
-        <span className="text-xs text-emerald-400">Nomad Loop · Arcade Drift Physics</span>
+        <span className="text-xs text-emerald-400">BusanNomad · Arcade Drift Physics</span>
       </div>
     </div>
   );

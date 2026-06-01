@@ -3,15 +3,22 @@
 import { useState, useEffect } from "react";
 import { QRCodeSVG } from "qrcode.react";
 
-const plans = [
-  {
-    name: "Day Pass",
-    price: 15000,
-    priceLabel: "₩15,000",
-    period: "1 day",
-    features: ["1× coworking", "1× fitness", "10% dining discount"],
-    split: { f22: 6000, fitness: 4500, local: 3000, platform: 1500 },
-  },
+/* ── Plan flags ─────────────────────────────────────────────
+   MVP: Day Pass only. Set SHOW_MULTI_PLANS = true to re-enable
+   Week / Month when demand is validated.
+   ──────────────────────────────────────────────────────────── */
+const SHOW_MULTI_PLANS = false;
+
+const dayPass = {
+  name: "Day Pass",
+  price: null as number | null, // TBD — finalised before launch
+  priceLabel: "Price TBD",
+  period: "1 day",
+  features: ["1× coworking", "1× fitness", "10% dining discount"],
+  split: { f22: null, fitness: null, local: null, platform: null } as Record<string, number | null>,
+};
+
+const futurePlans = [
   {
     name: "Week Pass",
     price: 79000,
@@ -31,7 +38,7 @@ const plans = [
   },
 ];
 
-type Step = "select" | "payment" | "complete" | "active";
+type Step = "info" | "complete" | "active";
 
 const defaultCheckins = [
   { spot: "F22 Coworking", time: "Today 09:30", type: "Work", recent: false },
@@ -40,8 +47,7 @@ const defaultCheckins = [
 ];
 
 export default function PassPage() {
-  const [step, setStep] = useState<Step>("select");
-  const [selectedPlan, setSelectedPlan] = useState(1);
+  const [step, setStep] = useState<Step>("info");
   const [checkins, setCheckins] = useState(defaultCheckins);
   const [hasCoupon, setHasCoupon] = useState(false);
 
@@ -49,13 +55,10 @@ export default function PassPage() {
     setHasCoupon(!!localStorage.getItem("nomadloop_coupons"));
   }, []);
 
-  const plan = plans[selectedPlan];
-  const finalPrice = hasCoupon ? Math.round(plan.price * 0.8) : plan.price;
-
   const qrValue = JSON.stringify({
-    service: "nomad-loop",
+    service: "busan-nomad",
     user: "demo-user",
-    pass: plan.name,
+    pass: dayPass.name,
     issued: new Date().toISOString(),
     valid: true,
   });
@@ -73,102 +76,82 @@ export default function PassPage() {
         <p className="text-sm text-zinc-500">One pass for Learn · Work · Play</p>
       </div>
 
-      {step === "select" && (
+      {step === "info" && (
         <>
           {hasCoupon && (
             <div className="mx-6 mb-4 p-3 rounded-xl bg-emerald-950/30 border border-emerald-500/30">
-              <p className="text-sm text-emerald-400 font-medium">🎟 NOMAD20 applied — 20% off all plans!</p>
+              <p className="text-sm text-emerald-400 font-medium">🎟 NOMAD20 applied — 20% off!</p>
             </div>
           )}
-          <div className="px-6 space-y-3 mb-6">
-            {plans.map((p, i) => (
-              <button
-                key={p.name}
-                onClick={() => setSelectedPlan(i)}
-                className={`w-full p-4 rounded-xl border text-left transition-all ${
-                  selectedPlan === i ? "bg-emerald-950/30 border-emerald-500/40" : "bg-zinc-900 border-zinc-800 hover:border-zinc-700"
-                }`}
-              >
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2">
-                    <h3 className="font-semibold">{p.name}</h3>
-                    {p.popular && (
-                      <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400">Popular</span>
-                    )}
-                  </div>
-                  <div className="text-right">
-                    {hasCoupon ? (
-                      <>
-                        <p className="font-bold text-lg text-emerald-400">₩{Math.round(p.price * 0.8).toLocaleString()}</p>
-                        <p className="text-xs text-zinc-600 line-through">{p.priceLabel}</p>
-                      </>
-                    ) : (
-                      <p className="font-bold text-lg">{p.priceLabel}</p>
-                    )}
-                    <p className="text-xs text-zinc-500">/{p.period}</p>
-                  </div>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {p.features.map((f) => (
-                    <span key={f} className="text-xs text-zinc-400 bg-zinc-800 px-2 py-0.5 rounded">{f}</span>
-                  ))}
-                </div>
-              </button>
-            ))}
-          </div>
-          <div className="px-6">
-            <button onClick={() => setStep("payment")} className="w-full py-3 rounded-full bg-emerald-500 text-black font-semibold hover:bg-emerald-400 transition-colors">
-              Get {plan.name} — ₩{finalPrice.toLocaleString()}
-            </button>
-          </div>
-        </>
-      )}
 
-      {step === "payment" && (
-        <div className="px-6">
-          <div className="p-6 rounded-2xl bg-zinc-900 border border-zinc-800 mb-6">
-            <h2 className="font-semibold mb-4">Payment details</h2>
-            <div className="space-y-3">
-              <div>
-                <label className="text-xs text-zinc-500 block mb-1">Card number</label>
-                <input type="text" placeholder="0000 0000 0000 0000" className="w-full p-3 rounded-lg bg-zinc-800 border border-zinc-700 text-sm" />
-              </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="text-xs text-zinc-500 block mb-1">Expiry</label>
-                  <input type="text" placeholder="MM/YY" className="w-full p-3 rounded-lg bg-zinc-800 border border-zinc-700 text-sm" />
-                </div>
-                <div>
-                  <label className="text-xs text-zinc-500 block mb-1">CVC</label>
-                  <input type="text" placeholder="000" className="w-full p-3 rounded-lg bg-zinc-800 border border-zinc-700 text-sm" />
+          {/* Day Pass card */}
+          <div className="px-6 mb-6">
+            <div className="w-full p-5 rounded-xl bg-emerald-950/30 border border-emerald-500/40">
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="font-semibold text-lg">{dayPass.name}</h3>
+                <div className="text-right">
+                  <p className="font-bold text-lg text-amber-400">{dayPass.priceLabel}</p>
+                  <p className="text-xs text-zinc-500">/{dayPass.period}</p>
                 </div>
               </div>
-            </div>
-            <div className="mt-4 pt-4 border-t border-zinc-800">
-              <div className="flex justify-between text-sm mb-1">
-                <span className="text-zinc-400">{plan.name}</span>
-                <span>{plan.priceLabel}</span>
+              <div className="flex flex-wrap gap-2 mb-4">
+                {dayPass.features.map((f) => (
+                  <span key={f} className="text-xs text-zinc-400 bg-zinc-800 px-2 py-0.5 rounded">{f}</span>
+                ))}
               </div>
-              {hasCoupon && (
-                <div className="flex justify-between text-sm mb-1">
-                  <span className="text-emerald-400">🎟 NOMAD20 discount</span>
-                  <span className="text-emerald-400">-₩{(plan.price - finalPrice).toLocaleString()}</span>
-                </div>
-              )}
-              <div className="flex justify-between font-bold mt-2 pt-2 border-t border-zinc-800">
-                <span>Total</span>
-                <span className="text-emerald-400">₩{finalPrice.toLocaleString()}</span>
-              </div>
+              <p className="text-xs text-zinc-500">
+                Includes access to 3 verified spaces: F22 Coworking, Fitness Partner, and local restaurants in Gwanganli.
+              </p>
             </div>
           </div>
-          <button onClick={() => setStep("complete")} className="w-full py-3 rounded-full bg-emerald-500 text-black font-semibold hover:bg-emerald-400 transition-colors mb-3">
-            Pay ₩{finalPrice.toLocaleString()}
-          </button>
-          <button onClick={() => setStep("select")} className="w-full py-3 rounded-full border border-zinc-700 text-zinc-400 text-sm">
-            Back
-          </button>
-          <p className="text-[10px] text-zinc-600 text-center mt-3">* Demo mockup. No real payment is processed.</p>
-        </div>
+
+          {/* How to get it */}
+          <div className="px-6 mb-6">
+            <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-800">
+              <h3 className="text-sm font-semibold text-zinc-300 mb-2">How to get the Day Pass</h3>
+              <p className="text-sm text-zinc-400 leading-relaxed">
+                July passes are distributed through partner travel agencies — no individual checkout needed.
+                Contact us or your travel coordinator to reserve.
+              </p>
+              <p className="text-xs text-zinc-600 mt-2">* Pricing will be confirmed before launch.</p>
+            </div>
+          </div>
+
+          <div className="px-6">
+            <button onClick={() => setStep("complete")} className="w-full py-3 rounded-full bg-emerald-500 text-black font-semibold hover:bg-emerald-400 transition-colors">
+              Get the Day Pass
+            </button>
+            <p className="text-[10px] text-zinc-600 text-center mt-3">* Demo flow — no real payment is processed.</p>
+          </div>
+
+          {/* Hidden multi-plan selector — enable via SHOW_MULTI_PLANS flag */}
+          {SHOW_MULTI_PLANS && (
+            <div className="px-6 mt-6 space-y-3">
+              <h3 className="text-sm font-semibold text-zinc-500 uppercase tracking-wider">More plans</h3>
+              {futurePlans.map((p) => (
+                <div key={p.name} className="w-full p-4 rounded-xl bg-zinc-900 border border-zinc-800">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-semibold">{p.name}</h3>
+                      {p.popular && (
+                        <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400">Popular</span>
+                      )}
+                    </div>
+                    <div className="text-right">
+                      <p className="font-bold text-lg">{p.priceLabel}</p>
+                      <p className="text-xs text-zinc-500">/{p.period}</p>
+                    </div>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {p.features.map((f) => (
+                      <span key={f} className="text-xs text-zinc-400 bg-zinc-800 px-2 py-0.5 rounded">{f}</span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </>
       )}
 
       {step === "complete" && (
@@ -176,31 +159,8 @@ export default function PassPage() {
           <div className="p-6 rounded-2xl bg-gradient-to-br from-emerald-950/50 to-zinc-900 border border-emerald-800/30 text-center mb-6">
             <div className="text-4xl mb-3">✅</div>
             <h2 className="text-xl font-bold mb-1">Pass activated!</h2>
-            <p className="text-emerald-400 font-semibold">{plan.name} · ₩{finalPrice.toLocaleString()}</p>
-            <p className="text-xs text-zinc-500 mt-1">Valid for {plan.period}</p>
-          </div>
-
-          <div className="p-4 rounded-xl bg-zinc-900 border border-zinc-800 mb-6">
-            <h3 className="text-sm font-semibold text-zinc-400 mb-3">Partner revenue share</h3>
-            <div className="space-y-2">
-              <div className="flex justify-between text-sm">
-                <span className="text-blue-400">💼 F22 Coworking</span>
-                <span>₩{plan.split.f22.toLocaleString()}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-emerald-400">🏋️ Fitness Partner</span>
-                <span>₩{plan.split.fitness.toLocaleString()}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-amber-400">🍜 Local restaurants</span>
-                <span>₩{plan.split.local.toLocaleString()}</span>
-              </div>
-              <div className="flex justify-between text-sm pt-2 border-t border-zinc-800">
-                <span className="text-cyan-400">🔄 Nomad Loop</span>
-                <span>₩{plan.split.platform.toLocaleString()}</span>
-              </div>
-            </div>
-            <p className="text-[10px] text-zinc-600 mt-3">* Revenue is shared with local partners</p>
+            <p className="text-emerald-400 font-semibold">{dayPass.name}</p>
+            <p className="text-xs text-zinc-500 mt-1">Valid for {dayPass.period}</p>
           </div>
 
           <button onClick={() => setStep("active")} className="w-full py-3 rounded-full bg-emerald-500 text-black font-semibold hover:bg-emerald-400 transition-colors">
@@ -216,7 +176,7 @@ export default function PassPage() {
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <p className="text-sm text-emerald-400 font-medium">Active</p>
-                  <h2 className="text-xl font-bold">{plan.name}</h2>
+                  <h2 className="text-xl font-bold">{dayPass.name}</h2>
                 </div>
                 <div className="w-3 h-3 rounded-full bg-emerald-400 animate-pulse" />
               </div>
@@ -273,8 +233,8 @@ export default function PassPage() {
           </div>
 
           <div className="px-6 mt-6">
-            <button onClick={() => setStep("select")} className="w-full py-3 rounded-full border border-zinc-700 text-zinc-400 text-sm">
-              Change plan
+            <button onClick={() => setStep("info")} className="w-full py-3 rounded-full border border-zinc-700 text-zinc-400 text-sm">
+              Back to pass info
             </button>
           </div>
         </>
