@@ -18,11 +18,11 @@ const verifiedSpots = [
     color: "bg-emerald-500/10 text-emerald-400",
   },
   {
-    name: "Nomad Community Cafe",
-    type: "Learn",
-    desc: "Community meetups and networking",
-    address: "Gwanganli, Busan",
-    color: "bg-purple-500/10 text-purple-400",
+    name: "Daniels Tribe",
+    type: "Work",
+    desc: "Quiet deep-work cafe near Gwangalli",
+    address: "8 Suyeong-ro 554beonga-gil, Suyeong-gu",
+    color: "bg-blue-500/10 text-blue-400",
   },
 ];
 

@@ -7,6 +7,7 @@ import { CourseSection } from "./course-section";
 
 type Category = "All" | "Learn" | "Work" | "Play";
 
+/* ── Verified spots (MVP: 3 only) ──────────────────────────── */
 const spots = [
   {
     id: 1,
@@ -30,6 +31,20 @@ const spots = [
   },
   {
     id: 3,
+    name: "Daniels Tribe",
+    category: "Work" as const,
+    address: "8 Suyeong-ro 554beonga-gil, Suyeong-gu, Busan",
+    description: "Quiet deep-work cafe near Gwangalli",
+    lat: 35.1544525,
+    lng: 129.1149754,
+    hours: "08:00 - 23:00",
+  },
+];
+
+/* ── Future spots (hidden for MVP — re-enable when expanding)
+const extraSpots = [
+  {
+    id: 4,
     name: "Gwangalli Food Street",
     category: "Play" as const,
     address: "Gwangalli Beach Rd",
@@ -39,7 +54,7 @@ const spots = [
     hours: "11:00 - 23:00",
   },
   {
-    id: 4,
+    id: 5,
     name: "Gwangan Bridge Viewpoint",
     category: "Play" as const,
     address: "Millak-dong, Suyeong-gu",
@@ -49,7 +64,7 @@ const spots = [
     hours: "Always Open",
   },
   {
-    id: 5,
+    id: 6,
     name: "Haeundae Beach Run",
     category: "Play" as const,
     address: "Haeundae Beach Rd",
@@ -59,7 +74,7 @@ const spots = [
     hours: "Always Open",
   },
   {
-    id: 6,
+    id: 7,
     name: "Avani Hotel Busan",
     category: "Work" as const,
     address: "Haeundae-gu",
@@ -69,6 +84,7 @@ const spots = [
     hours: "24/7",
   },
 ];
+── */
 
 const categoryColors: Record<string, string> = {
   Learn: "bg-purple-500",
