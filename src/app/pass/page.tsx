@@ -194,7 +194,7 @@ export default function PassPage() {
                 {[
                   { spot: "F22 Coworking", type: "Work", emoji: "💼" },
                   { spot: "Fitness Partner", type: "Play", emoji: "🏋️" },
-                  { spot: "Gwangalli Eats", type: "Play", emoji: "🍜" },
+                  { spot: "Daniels Tribe", type: "Work", emoji: "☕" },
                 ].map((s) => (
                   <div
                     key={s.spot}
@@ -226,7 +226,7 @@ export default function PassPage() {
                   {[
                     { spot: "F22 Coworking", type: "Work", emoji: "💼" },
                     { spot: "Fitness Partner", type: "Play", emoji: "🏋️" },
-                    { spot: "Gwangalli Eats", type: "Play", emoji: "🍜" },
+                    { spot: "Daniels Tribe", type: "Work", emoji: "☕" },
                   ].map((s) => (
                     <button
                       key={s.spot}
