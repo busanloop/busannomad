@@ -180,9 +180,11 @@ export default function DiscoverPage() {
             <p className="text-sm text-zinc-400 mb-2">{spot.description}</p>
             <div className="flex items-center justify-between">
               <span className="text-xs text-zinc-600">{spot.hours}</span>
+              {/* QR check-in disabled for MVP — manual verification at spot
               <button className="text-xs text-emerald-400 font-medium hover:text-emerald-300">
                 Check In →
               </button>
+              */}
             </div>
           </div>
         ))}
@@ -210,7 +212,7 @@ export default function DiscoverPage() {
           className="block w-full p-4 rounded-xl bg-gradient-to-r from-emerald-950/40 to-cyan-950/40 border border-emerald-500/20 text-center hover:border-emerald-500/40 transition-colors"
         >
           <p className="text-emerald-400 font-semibold text-sm">Next step →</p>
-          <p className="text-xs text-zinc-400 mt-1">Get your pass and check in with QR</p>
+          <p className="text-xs text-zinc-400 mt-1">Get your pass — just show it at the spot</p>
         </a>
       </div>
     </div>

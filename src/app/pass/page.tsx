@@ -1,13 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { QRCodeSVG } from "qrcode.react";
+// import { QRCodeSVG } from "qrcode.react";
 
-/* ── Plan flags ─────────────────────────────────────────────
-   MVP: Day Pass only. Set SHOW_MULTI_PLANS = true to re-enable
-   Week / Month when demand is validated.
+/* ── Feature flags ──────────────────────────────────────────
+   MVP: Day Pass only, manual verification at spot (no QR).
+   SHOW_MULTI_PLANS  → re-enable Week/Month when demand validated.
+   ENABLE_QR_CHECKIN → re-enable QR + digital check-in flow.
    ──────────────────────────────────────────────────────────── */
 const SHOW_MULTI_PLANS = false;
+const ENABLE_QR_CHECKIN = false;
 
 const dayPass = {
   name: "Day Pass",
@@ -40,20 +42,20 @@ const futurePlans = [
 
 type Step = "info" | "complete" | "active";
 
+/* ── QR check-in data (disabled for MVP — manual verification at spot)
 const defaultCheckins = [
   { spot: "F22 Coworking", time: "Today 09:30", type: "Work", recent: false },
   { spot: "Fitness Partner", time: "Today 12:00", type: "Play", recent: false },
   { spot: "Gwangalli Cafe", time: "Yesterday 18:00", type: "Play", recent: false },
 ];
+── */
 
 export default function PassPage() {
   const [step, setStep] = useState<Step>("info");
-  const [checkins, setCheckins] = useState(defaultCheckins);
   const [hasCoupon, setHasCoupon] = useState(false);
 
-  useEffect(() => {
-    setHasCoupon(!!localStorage.getItem("nomadloop_coupons"));
-  }, []);
+  /* ── QR check-in state (disabled for MVP)
+  const [checkins, setCheckins] = useState(defaultCheckins);
 
   const qrValue = JSON.stringify({
     service: "busan-nomad",
@@ -68,6 +70,11 @@ export default function PassPage() {
     const timeStr = `${now.getHours()}:${now.getMinutes().toString().padStart(2, "0")}`;
     setCheckins([{ spot, time: `Just now ${timeStr}`, type, recent: true }, ...checkins]);
   };
+  ── */
+
+  useEffect(() => {
+    setHasCoupon(!!localStorage.getItem("nomadloop_coupons"));
+  }, []);
 
   return (
     <div className="flex flex-col">
@@ -164,7 +171,7 @@ export default function PassPage() {
           </div>
 
           <button onClick={() => setStep("active")} className="w-full py-3 rounded-full bg-emerald-500 text-black font-semibold hover:bg-emerald-400 transition-colors">
-            View Pass QR
+            View My Pass
           </button>
         </div>
       )}
@@ -180,57 +187,84 @@ export default function PassPage() {
                 </div>
                 <div className="w-3 h-3 rounded-full bg-emerald-400 animate-pulse" />
               </div>
-              <div className="flex justify-center py-4">
-                <div className="bg-white p-3 rounded-xl">
-                  <QRCodeSVG value={qrValue} size={180} level="M" bgColor="#ffffff" fgColor="#000000" />
+              <p className="text-center text-sm text-zinc-400 py-6">
+                Show this pass at any partner spot. The staff will verify your access.
+              </p>
+              <div className="grid grid-cols-3 gap-2">
+                {[
+                  { spot: "F22 Coworking", type: "Work", emoji: "💼" },
+                  { spot: "Fitness Partner", type: "Play", emoji: "🏋️" },
+                  { spot: "Gwangalli Eats", type: "Play", emoji: "🍜" },
+                ].map((s) => (
+                  <div
+                    key={s.spot}
+                    className="p-2 rounded-lg bg-zinc-900 border border-zinc-800 text-center"
+                  >
+                    <span className="text-lg">{s.emoji}</span>
+                    <p className="text-[10px] text-zinc-400 mt-1">{s.spot.split(" ")[0]}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* QR check-in UI (disabled for MVP — manual verification at spot)
+          {ENABLE_QR_CHECKIN && (
+            <>
+              <div className="px-6 mb-6">
+                <div className="flex justify-center py-4">
+                  <div className="bg-white p-3 rounded-xl">
+                    <QRCodeSVG value={qrValue} size={180} level="M" bgColor="#ffffff" fgColor="#000000" />
+                  </div>
+                </div>
+                <p className="text-center text-sm text-zinc-400 mt-3">Scan QR at any partner spot to check in</p>
+              </div>
+
+              <div className="px-6 mb-4">
+                <h2 className="text-sm font-semibold text-zinc-500 uppercase tracking-wider mb-3">Quick Check-in</h2>
+                <div className="flex gap-2">
+                  {[
+                    { spot: "F22 Coworking", type: "Work", emoji: "💼" },
+                    { spot: "Fitness Partner", type: "Play", emoji: "🏋️" },
+                    { spot: "Gwangalli Eats", type: "Play", emoji: "🍜" },
+                  ].map((s) => (
+                    <button
+                      key={s.spot}
+                      onClick={() => handleCheckin(s.spot, s.type)}
+                      className="flex-1 p-2 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-emerald-500/40 transition-colors text-center"
+                    >
+                      <span className="text-lg">{s.emoji}</span>
+                      <p className="text-[10px] text-zinc-400 mt-1">{s.spot.split(" ")[0]}</p>
+                    </button>
+                  ))}
                 </div>
               </div>
-              <p className="text-center text-sm text-zinc-400 mt-3">Scan QR at any partner spot to check in</p>
-            </div>
-          </div>
 
-          <div className="px-6 mb-4">
-            <h2 className="text-sm font-semibold text-zinc-500 uppercase tracking-wider mb-3">Quick Check-in</h2>
-            <div className="flex gap-2">
-              {[
-                { spot: "F22 Coworking", type: "Work", emoji: "💼" },
-                { spot: "Fitness Partner", type: "Play", emoji: "🏋️" },
-                { spot: "Gwangalli Eats", type: "Play", emoji: "🍜" },
-              ].map((s) => (
-                <button
-                  key={s.spot}
-                  onClick={() => handleCheckin(s.spot, s.type)}
-                  className="flex-1 p-2 rounded-lg bg-zinc-900 border border-zinc-800 hover:border-emerald-500/40 transition-colors text-center"
-                >
-                  <span className="text-lg">{s.emoji}</span>
-                  <p className="text-[10px] text-zinc-400 mt-1">{s.spot.split(" ")[0]}</p>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="px-6">
-            <h2 className="text-sm font-semibold text-zinc-500 uppercase tracking-wider mb-3">Recent Check-ins</h2>
-            <div className="space-y-2">
-              {checkins.map((c, i) => (
-                <div
-                  key={c.spot + c.time + i}
-                  className={`flex items-center justify-between p-3 rounded-xl border ${
-                    c.recent ? "bg-emerald-950/20 border-emerald-500/30" : "bg-zinc-900 border-zinc-800"
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <span className={`w-2 h-2 rounded-full ${
-                      c.type === "Work" ? "bg-blue-400" : c.type === "Play" ? "bg-emerald-400" : "bg-purple-400"
-                    }`} />
-                    <span className="text-sm font-medium">{c.spot}</span>
-                    {c.recent && <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400">NEW</span>}
-                  </div>
-                  <span className="text-xs text-zinc-500">{c.time}</span>
+              <div className="px-6">
+                <h2 className="text-sm font-semibold text-zinc-500 uppercase tracking-wider mb-3">Recent Check-ins</h2>
+                <div className="space-y-2">
+                  {checkins.map((c, i) => (
+                    <div
+                      key={c.spot + c.time + i}
+                      className={`flex items-center justify-between p-3 rounded-xl border ${
+                        c.recent ? "bg-emerald-950/20 border-emerald-500/30" : "bg-zinc-900 border-zinc-800"
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className={`w-2 h-2 rounded-full ${
+                          c.type === "Work" ? "bg-blue-400" : c.type === "Play" ? "bg-emerald-400" : "bg-purple-400"
+                        }`} />
+                        <span className="text-sm font-medium">{c.spot}</span>
+                        {c.recent && <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400">NEW</span>}
+                      </div>
+                      <span className="text-xs text-zinc-500">{c.time}</span>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </div>
+              </div>
+            </>
+          )}
+          */}
 
           <div className="px-6 mt-6">
             <button onClick={() => setStep("info")} className="w-full py-3 rounded-full border border-zinc-700 text-zinc-400 text-sm">
