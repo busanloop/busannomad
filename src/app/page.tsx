@@ -59,39 +59,26 @@ export default function Home() {
             Busan, South Korea
           </div>
           <h1 className="text-4xl sm:text-5xl font-bold tracking-tight mb-4">
-            BusanNomad
+            Work in Busan.<br />
+            Wake your senses.
           </h1>
-          <p className="text-lg text-zinc-300 max-w-md mx-auto mb-2">
-            One pass. Three verified spaces. Learn · Work · Play.
+          <p className="text-lg text-zinc-300 max-w-md mx-auto mb-8">
+            Three verified spaces — a coworking studio, a gym, and a
+            café — in one pass. Learn, Work, Play at the scale of a city.
           </p>
-          <p className="text-sm text-zinc-500 max-w-sm mx-auto mb-8">
-            Not the commute — a life that wakes your senses. Coworking, fitness, and a cafe across Busan, on a single pass.
-          </p>
-
-          {/* How it works */}
-          <div className="mb-6 p-3 rounded-xl bg-zinc-900/60 border border-zinc-800 max-w-sm mx-auto">
-            <p className="text-xs text-zinc-400 text-center mb-2">How it works</p>
-            <div className="flex items-center justify-center gap-1 text-xs text-zinc-500">
-              <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-medium">1. Discover</span>
-              <span>→</span>
-              <span className="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 font-medium">2. Get Pass</span>
-              <span>→</span>
-              <span className="px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 font-medium">3. Use</span>
-            </div>
-          </div>
 
           <div className="flex flex-wrap gap-3 justify-center">
             <Link
               href="/pass"
               className="px-8 py-3.5 rounded-full bg-emerald-500 text-black font-bold hover:bg-emerald-400 transition-colors text-lg"
             >
-              Get the Pass
+              See the pass
             </Link>
             <Link
               href="/discover"
               className="px-8 py-3.5 rounded-full bg-zinc-800 text-zinc-200 font-bold border border-zinc-700 hover:bg-zinc-700 transition-colors text-lg"
             >
-              See the spots
+              Explore the spots
             </Link>
           </div>
         </div>
