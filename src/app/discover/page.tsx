@@ -21,9 +21,9 @@ const spots = [
   },
   {
     id: 2,
-    name: "Fitness Partner",
+    name: "Fitness Korea Munhyeon",
     category: "Play" as const,
-    address: "10 min walk from F22",
+    address: "Under 10 min walk from BIFC2, Munhyeon",
     description: "Gym, weights & yoga",
     lat: 35.1545,
     lng: 129.1155,

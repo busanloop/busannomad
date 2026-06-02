@@ -6,22 +6,22 @@ const verifiedSpots = [
   {
     name: "F22 Coworking",
     type: "Work",
-    desc: "300sqm lounge & meeting rooms, 24/7 open",
-    address: "Gwanganli, Busan",
+    desc: "300sqm lounge & meeting rooms, open 24/7",
+    address: "Gwangalli Beach Rd, Suyeong-gu",
     color: "bg-blue-500/10 text-blue-400",
   },
   {
-    name: "Fitness & Wellness",
+    name: "Fitness Korea Munhyeon",
     type: "Play",
-    desc: "Gym, recovery, and wellness programs",
-    address: "10 min walk from F22",
+    desc: "Gym, weights & yoga",
+    address: "Under 10 min walk from BIFC2, Munhyeon",
     color: "bg-emerald-500/10 text-emerald-400",
   },
   {
     name: "Daniels Tribe",
     type: "Work",
     desc: "Quiet deep-work cafe near Gwangalli",
-    address: "8 Suyeong-ro 554beonga-gil, Suyeong-gu",
+    address: "8 Suyeong-ro 554beonga-gil, Suyeong-gu, Busan",
     color: "bg-blue-500/10 text-blue-400",
   },
 ];
