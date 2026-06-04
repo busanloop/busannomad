@@ -239,7 +239,7 @@ export function KartViewer() {
       </Canvas>
       <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-2 bg-zinc-900/80 backdrop-blur-sm px-3 py-1.5 rounded-full border border-zinc-700/50">
         <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-        <span className="text-xs text-zinc-300">BusanNomad — Busan Drift Course</span>
+        <span className="text-xs text-zinc-300">BusanNomads — Busan Drift Course</span>
       </div>
     </div>
   );

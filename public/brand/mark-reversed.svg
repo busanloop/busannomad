@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" width="512" height="512" role="img" aria-label="BusanNomad mark reversed">
+  
+  <g transform="translate(0,3)">
+    <path fill="#FBFAF7" fill-rule="evenodd" d="M120,216 C84,168 46,134 46,92 A74,74 0 1 1 194,92 C194,134 156,168 120,216 Z M60,96 C73,78 87,78 100,96 C113,114 127,114 140,96 C153,78 167,78 180,96 L180,122 C167,104 153,104 140,122 C127,140 113,140 100,122 C87,104 73,104 60,122 Z"></path>
+  </g>
+</svg>
