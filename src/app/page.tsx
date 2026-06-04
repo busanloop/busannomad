@@ -89,7 +89,7 @@ export default function Home() {
         <h2 className="text-sm font-semibold text-zinc-500 uppercase tracking-wider mb-2 text-center">
           3 Verified Spaces
         </h2>
-        <p className="text-xs text-zinc-600 text-center mb-6">
+        <p className="text-xs text-zinc-500 text-center mb-6">
           Real places, visited and confirmed. Not a listing — a curated pass.
         </p>
         <div className="space-y-3 max-w-lg mx-auto">
@@ -104,9 +104,9 @@ export default function Home() {
                 {s.type}
               </span>
               <div>
-                <p className="font-medium">{s.name}</p>
+                <p className="font-medium text-zinc-100">{s.name}</p>
                 <p className="text-sm text-zinc-400 mt-0.5">{s.desc}</p>
-                <p className="text-xs text-zinc-600 mt-1">{s.address}</p>
+                <p className="text-xs text-zinc-500 mt-1">{s.address}</p>
               </div>
             </div>
           ))}

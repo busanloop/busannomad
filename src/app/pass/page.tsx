@@ -120,7 +120,7 @@ export default function PassPage() {
                 July passes are distributed through partner travel agencies — no individual checkout needed.
                 Contact us or your travel coordinator to reserve.
               </p>
-              <p className="text-xs text-zinc-600 mt-2">* Pricing will be confirmed before launch.</p>
+              <p className="text-xs text-zinc-500 mt-2">* Pricing will be confirmed before launch.</p>
             </div>
           </div>
 
@@ -128,7 +128,7 @@ export default function PassPage() {
             <button onClick={() => setStep("complete")} className="w-full py-3 rounded-full bg-emerald-500 text-black font-semibold hover:bg-emerald-400 transition-colors">
               Get the Day Pass
             </button>
-            <p className="text-[10px] text-zinc-600 text-center mt-3">* Demo flow — no real payment is processed.</p>
+            <p className="text-[10px] text-zinc-500 text-center mt-3">* Demo flow — no real payment is processed.</p>
           </div>
 
           {/* Hidden multi-plan selector — enable via SHOW_MULTI_PLANS flag */}
