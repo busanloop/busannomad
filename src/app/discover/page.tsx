@@ -13,10 +13,10 @@ const spots = [
     id: 1,
     name: "F22 Coworking",
     category: "Work" as const,
-    address: "Gwangalli Beach Rd, Suyeong-gu",
+    address: "128, Namdongcheon-ro, Nam-gu, Busan, Republic of Korea",
     description: "300sqm lounge & meeting rooms, open 24/7",
-    lat: 35.1531,
-    lng: 129.1186,
+    lat: 35.141046,
+    lng: 129.065214,
     hours: "24/7",
   },
   {

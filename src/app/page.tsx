@@ -7,7 +7,7 @@ const verifiedSpots = [
     name: "F22 Coworking",
     type: "Work",
     desc: "300sqm lounge & meeting rooms, open 24/7",
-    address: "Gwangalli Beach Rd, Suyeong-gu",
+    address: "128, Namdongcheon-ro, Nam-gu, Busan, Republic of Korea",
     color: "bg-blue-500/10 text-blue-400",
   },
   {

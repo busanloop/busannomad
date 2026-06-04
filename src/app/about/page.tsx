@@ -206,7 +206,7 @@ export default function AboutPage() {
             <p className="text-[10px] text-zinc-500">Open hours</p>
           </div>
         </div>
-        <p className="text-xs text-zinc-500 mt-3">Gwangalli, Busan · f22.co.kr</p>
+        <p className="text-xs text-zinc-500 mt-3">128, Namdongcheon-ro, Nam-gu, Busan · f22.co.kr</p>
       </section>
     </div>
   );

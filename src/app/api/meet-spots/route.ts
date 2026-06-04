@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 
 const APIFUSE_KEY = process.env.APIFUSE_API_KEY || "";
-const F22_LAT = 35.1531;
-const F22_LNG = 129.1186;
+const F22_LAT = 35.141046;
+const F22_LNG = 129.065214;
 
 const FALLBACK = [
   { name: "광안리 해변 맛집거리", address: "부산 수영구 광안해변로", category: "음식점", lat: 35.1535, lng: 129.1195, distance: 0 },
