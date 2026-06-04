@@ -1,7 +1,7 @@
 export default function AboutPage() {
   return (
     <div className="px-6 py-8 max-w-2xl mx-auto">
-      <h1 className="text-2xl font-bold mb-2">About BusanNomad</h1>
+      <h1 className="text-2xl font-bold mb-2">About BusanNomads</h1>
       <p className="text-sm text-zinc-500 mb-8">
         How we built a city-wide Learn · Work · Play platform for digital nomads
       </p>
@@ -208,6 +208,19 @@ export default function AboutPage() {
         </div>
         <p className="text-xs text-zinc-500 mt-3">128, Namdongcheon-ro, Nam-gu, Busan · f22.co.kr</p>
       </section>
+
+      {/* Contact footer */}
+      <footer className="mt-10 pt-6 border-t border-zinc-800 text-center">
+        <p className="text-sm text-zinc-400">
+          Questions or want to host a meetup?{" "}
+          <a
+            href="mailto:busannomads@gmail.com"
+            className="text-emerald-400 hover:text-emerald-300 underline underline-offset-2"
+          >
+            busannomads@gmail.com
+          </a>
+        </p>
+      </footer>
     </div>
   );
 }

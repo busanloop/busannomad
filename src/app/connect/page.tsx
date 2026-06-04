@@ -391,11 +391,21 @@ export default function ConnectPage() {
         </ul>
 
         {!isSupabaseConfigured() && (
-          <p className="text-xs text-zinc-600 pb-6">
+          <p className="text-xs text-zinc-600">
             Demo mode — connect Supabase to see real nomads. List refreshes every
             60s when live.
           </p>
         )}
+
+        <p className="mt-4 pb-6 text-xs text-zinc-400">
+          Questions or want to host a meetup?{" "}
+          <a
+            href="mailto:busannomads@gmail.com"
+            className="text-emerald-400 hover:text-emerald-300 underline underline-offset-2"
+          >
+            busannomads@gmail.com
+          </a>
+        </p>
       </div>
     </div>
   );
