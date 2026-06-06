@@ -1,79 +1,79 @@
-# Nomad Loop
+# Busannomads
 
-**Race through Busan, discover real spots, and use them with a Learn · Work · Play city pass for digital nomads.**
+**Busan has places to work. We have the people in them.**
 
-> OBA Weekendthon Season 1 | 2026.05.30-31
-> 12h · Solo · Claude Code
+Busannomads connects visiting digital nomads in Busan with each other — and with three verified physical spaces to work, move, and meet. We implement **Learn · Work · Play** not inside one building, but at the scale of the city.
 
-## Demo
+> Site: https://busannomads.com · IG [@busannomads](https://instagram.com/busannomads) · Contact: busannomads@gmail.com
 
-**Live:** https://nomadloop.netlify.app/
+---
+
+## What it is
+
+Busan is full of places to work. What's missing is someone to work beside. Busannomads fixes that.
+
+- **Connect** *(core)* — anonymous, login-free check-in showing which spots have nomads right now, so you can join them instead of just finding a desk.
+- **Three verified spaces** — visited and confirmed, not a listing:
+  - **f22** — coworking lounge, BIFC2 22F, Munhyeon, Nam-gu
+  - **Fitness Korea Munhyeon** — gym, near f22
+  - **Daniels Tribe** — quiet deep-work café, Suyeong-gu
+- **Learn · Work · Play** — the whole city as a nomad campus.
+
+First cohort: ~60 visiting nomads in July 2026, via the Korea Nomad Alliance.
+
+---
+
+## Routes
 
 | Page | Description |
 |------|-------------|
-| `/` | Landing + 3D kart viewer |
-| `/race` | Busan Drift Race — arcade physics, coins, rewards |
-| `/discover` | Busan spots + MyRealTrip live data + KakaoMap restaurants |
-| `/pass` | Pass checkout → revenue share → QR check-in |
-| `/board` | Same-city nomad board |
-| `/about` | Tech deep dive + Go-to-Market + Revenue Model |
+| `/` | Landing — connection-first ("you don't work alone") |
+| `/connect` | **Core.** Anonymous check-in: who's in Busan right now |
+| `/discover` | Verified spaces + nearby eats + MyRealTrip tours |
+| `/pass` | Day pass (single-plan; checkout/QR behind flags) |
+| `/about` | Background |
+| `/race` | Legacy drift-racing demo (hidden from nav, preserved) |
+| `/board` | Legacy nomad board (hidden from nav, preserved) |
 
-## Core Flow
+---
 
-```
-Race (arcade drift racing)
- → Checkpoints → earn coupons (NOMAD20)
- → Coins → earn rewards
- → FINISH → "Visit spots"
- → Discover (coupon discount + MyRealTrip real products)
- → Product click → tracked partner link → real purchase
- → Pass → payment mockup → revenue share display → QR → check-in
-```
+## Tech stack
 
-**Learn · Work · Play** — the entire city of Busan as a nomad campus.
+Next.js 16 · React 19 · Tailwind CSS 4 · Supabase (Connect presence) · Three.js (legacy demo) · Netlify (auto-deploy on push to `main`)
 
-## API Integrations (3 live)
+> ⚠️ Next.js 16 has breaking changes vs. earlier versions. See `AGENTS.md` before writing code.
 
-| API | How we used it | Data |
-|-----|---------------|------|
-| **MyRealTrip** | Tour + accommodation search + **tracked partner links** (purchases earn commission) | 279 tours + 1,942 hotels |
-| **API Fuse × KakaoMap** | Server-side place search for Gwangalli restaurants/cafes. Fallback on failure | Real-time |
-| **Three.js** | Custom drift racing engine with ghost replay, coins, mobile touch | WebGL |
+---
 
-## Racing Features
-
-- Arcade drift physics (3-factor: yaw rate, lateral grip, forward assist)
-- 6 Busan checkpoints with real rewards
-- Ghost racing (top 3 laps)
-- Coin collection (15 coins → reward scaling)
-- Traffic light countdown
-- Busan night theme + props (lighthouse, food stalls, palm trees, boats, torii)
-- Mobile touch controls (joystick + buttons)
-- Attract mode (cinematic auto-drive before START)
-
-## Revenue Model (Live)
-
-| Source | Status |
-|--------|--------|
-| **MyRealTrip commission** | Tracked partner links — live now |
-| **Pass revenue share** | F22 / Fitness / Restaurants split |
-| **Public workation contracts** | Busan city ₩74.4M annual budget |
-
-## Real Assets (Secured)
-
-- F22 Coworking (300sqm, Busan) — operating
-- Fitness partner — agreed
-- Hotel network — sales pipeline
-- Restaurant curation — in progress
-
-## Tech Stack
-
-Next.js 16 · Tailwind CSS · Three.js · qrcode.react · Netlify
-
-## Run Locally
+## Run locally
 
 ```bash
 npm install
-cp .env.example .env.local  # Add MRT_API_KEY, APIFUSE_API_KEY
+cp .env.example .env.local
 npm run dev
 ```
+
+### Environment variables
+
+| Var | Used for |
+|-----|----------|
+| `NEXT_PUBLIC_SUPABASE_URL` | Connect live presence (**required** — without it, /connect falls back to demo mode) |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Connect live presence (**required**) |
+| `MRT_API_KEY` | MyRealTrip tours (Discover) |
+| `APIFUSE_API_KEY` | API Fuse × KakaoMap place search (Discover) |
+
+---
+
+## External integrations
+
+| API | How it's used |
+|-----|---------------|
+| **MyRealTrip** | Tour/accommodation search + tracked partner links, on Discover |
+| **API Fuse × KakaoMap** | Server-side place search for nearby eats; fallback data on failure |
+| **Supabase** | Anonymous presence store for Connect (device_id never exposed in reads) |
+
+---
+
+## Deploy
+
+Push to `main` → Netlify auto-deploys. Connect's live mode depends on the two `NEXT_PUBLIC_SUPABASE_*` vars being set in Netlify env.
