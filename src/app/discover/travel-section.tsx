@@ -23,12 +23,12 @@ type TravelItem = {
 type TabType = "tour" | "accommodation";
 
 const tourCategories = [
-  { label: "전체", value: "" },
-  { label: "투어", value: "tour" },
-  { label: "액티비티", value: "activity" },
-  { label: "티켓", value: "ticket" },
-  { label: "크루즈", value: "cruise_tour" },
-  { label: "스파", value: "spamassage" },
+  { label: "All", value: "" },
+  { label: "Tours", value: "tour" },
+  { label: "Activities", value: "activity" },
+  { label: "Tickets", value: "ticket" },
+  { label: "Cruises", value: "cruise_tour" },
+  { label: "Spa", value: "spamassage" },
 ];
 
 export function TravelSection() {
@@ -91,10 +91,10 @@ export function TravelSection() {
       <div className="flex items-center justify-between mb-3">
         <div>
           <h2 className="text-sm font-semibold text-zinc-500 uppercase tracking-wider">
-            {tab === "tour" ? "Busan Tours" : "Busan Stays"} · 마이리얼트립
+            {tab === "tour" ? "Busan Tours" : "Busan Stays"} · MyRealTrip
           </h2>
           {total > 0 && (
-            <p className="text-xs text-zinc-600 mt-0.5">{total.toLocaleString()}개 상품</p>
+            <p className="text-xs text-zinc-600 mt-0.5">{total.toLocaleString()} tours</p>
           )}
         </div>
         <div className="flex gap-1">
@@ -104,7 +104,7 @@ export function TravelSection() {
               tab === "tour" ? "bg-rose-500/20 text-rose-400" : "bg-zinc-800 text-zinc-500"
             }`}
           >
-            투어·티켓
+            Tours & Tickets
           </button>
           <button
             onClick={() => setTab("accommodation")}
@@ -112,7 +112,7 @@ export function TravelSection() {
               tab === "accommodation" ? "bg-violet-500/20 text-violet-400" : "bg-zinc-800 text-zinc-500"
             }`}
           >
-            숙소
+            Stays
           </button>
         </div>
       </div>
@@ -143,7 +143,7 @@ export function TravelSection() {
           ))}
         </div>
       ) : items.length === 0 ? (
-        <p className="text-sm text-zinc-500 text-center py-8">검색 결과가 없습니다</p>
+        <p className="text-sm text-zinc-500 text-center py-8">No results found</p>
       ) : (
         <div className="space-y-3">
           {items.map((item, idx) => (
