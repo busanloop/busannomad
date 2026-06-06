@@ -5,14 +5,14 @@ const F22_LAT = 35.141046;
 const F22_LNG = 129.065214;
 
 const FALLBACK = [
-  { name: "광안리 해변 맛집거리", address: "부산 수영구 광안해변로", category: "음식점", lat: 35.1535, lng: 129.1195, distance: 0 },
-  { name: "민락회센터", address: "부산 수영구 민락동", category: "횟집", lat: 35.1497, lng: 129.1263, distance: 0 },
-  { name: "광안리 카페거리", address: "부산 수영구 광안해변로", category: "카페", lat: 35.1540, lng: 129.1200, distance: 0 },
-  { name: "수영 전통시장", address: "부산 수영구 수영동", category: "시장", lat: 35.1565, lng: 129.1135, distance: 0 },
+  { name: "김씨네뷰", address: "부산 남구", category: "맛집", lat: 35.1455783, lng: 129.0675416, distance: 0 },
+  { name: "전포 카페거리", address: "부산 부산진구 전포동", category: "카페", lat: 35.1553990, lng: 129.0673266, distance: 0 },
+  { name: "Pickles 피클스", address: "부산 부산진구 전포동", category: "술집", lat: 35.1550857, lng: 129.0641420, distance: 0 },
+  { name: "Your Type Brunch", address: "부산 남구", category: "브런치", lat: 35.1517426, lng: 129.0665745, distance: 0 },
 ];
 
 export async function GET(req: NextRequest) {
-  const q = new URL(req.url).searchParams.get("q") || "광안리 맛집";
+  const q = new URL(req.url).searchParams.get("q") || "전포 맛집";
 
   if (!APIFUSE_KEY) {
     return NextResponse.json({ source: "fallback", items: FALLBACK });

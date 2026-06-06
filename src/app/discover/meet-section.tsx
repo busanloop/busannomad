@@ -15,13 +15,13 @@ export function MeetSection() {
   const [spots, setSpots] = useState<MeetSpot[]>([]);
   const [loading, setLoading] = useState(true);
   const [source, setSource] = useState("");
-  const [query, setQuery] = useState("광안리 맛집");
+  const [query, setQuery] = useState("전포 맛집");
 
   const queries = [
-    { label: "Restaurants", value: "광안리 맛집" },
-    { label: "Cafes", value: "광안리 카페" },
-    { label: "Bars", value: "광안리 술집" },
-    { label: "Seafood", value: "광안리 해산물" },
+    { label: "Restaurants", value: "문현 맛집" },
+    { label: "Cafes", value: "전포 카페" },
+    { label: "Bars", value: "전포 술집" },
+    { label: "Brunch", value: "전포 브런치" },
   ];
 
   useEffect(() => {
@@ -40,7 +40,7 @@ export function MeetSection() {
     <div>
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-sm font-semibold text-zinc-500 uppercase tracking-wider">
-          Local Eats · Gwangalli
+          Local Eats · Jeonpo
         </h2>
       </div>
 
