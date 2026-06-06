@@ -54,6 +54,18 @@ const DEMO_PRESENCE: PresenceRow[] = [
   },
 ];
 
+const SESSIONS = [
+  {
+    id: "jun10",
+    when: "Wed Jun 10 · 19:00",
+    stationCode: "bifc",
+    stationLabel: "BIFC · Munhyeon (f22)",
+    host: "Gray",
+    topic: "Building a nomad service in Busan",
+    note: "First meetup — everyone shares one thing they're good at",
+  },
+];
+
 export default function ConnectPage() {
   const [rows, setRows] = useState<PresenceRow[]>([]);
   const [myStation, setMyStation] = useState<StationCode | null>(null);
@@ -62,6 +74,9 @@ export default function ConnectPage() {
   const [showOptional, setShowOptional] = useState(false);
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState(false);
+  const [rsvps, setRsvps] = useState<Record<string, number>>({});
+  const rsvp = (id: string) =>
+    setRsvps((prev) => ({ ...prev, [id]: (prev[id] ?? 0) + 1 }));
 
   const joined = myStation !== null;
 
@@ -328,6 +343,47 @@ export default function ConnectPage() {
 
         {status && <p className="mt-2 text-xs text-zinc-500">{status}</p>}
       </div>
+
+      {SESSIONS.length > 0 && (
+        <div className="px-6 mt-6">
+          <h2 className="text-sm font-semibold text-zinc-300 mb-2">Today&apos;s sessions</h2>
+          <p className="text-xs text-zinc-500 mb-3">
+            Someone shares one thing they&apos;re good at. Tap join to say you&apos;ll come.
+          </p>
+          <ul className="space-y-2">
+            {SESSIONS.map((s) => (
+              <li
+                key={s.id}
+                className="rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <p className="text-xs text-emerald-400 font-medium">{s.when}</p>
+                    <p className="font-medium text-zinc-100 mt-0.5">{s.topic}</p>
+                    <p className="text-xs text-zinc-500 mt-1">
+                      {s.stationLabel} · hosted by {s.host}
+                    </p>
+                    <p className="text-xs text-zinc-500 mt-1">{s.note}</p>
+                  </div>
+                  <div className="shrink-0 text-right">
+                    <button
+                      onClick={() => rsvp(s.id)}
+                      className="rounded-full border border-white/15 px-3 py-1 text-xs font-medium text-zinc-300 hover:border-white/30"
+                    >
+                      Join 👋
+                    </button>
+                    {(rsvps[s.id] ?? 0) > 0 && (
+                      <p className="text-[11px] text-zinc-500 mt-1">
+                        {rsvps[s.id]} going
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
 
       {/* Who's here now */}
       <div className="px-6 mt-6">
