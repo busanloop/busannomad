@@ -30,6 +30,7 @@
 .DS_Store
 *.pem
 *.bak
+*.bak*
 
 # debug
 npm-debug.log*
