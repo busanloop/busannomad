@@ -28,7 +28,7 @@ const verifiedSpots = [
 
 const steps = [
   { n: "01", title: "Come in", desc: "Drop by any verified space with your day pass." },
-  { n: "02", title: "Check in", desc: "See who else is working in Busan right now." },
+  { n: "02", title: "Check in", desc: "Let the front desk know you're in — they'll mark you down." },
   { n: "03", title: "Connect", desc: "Share what you do, learn from others, never work alone." },
 ];
 
@@ -52,16 +52,16 @@ export default function Home() {
           </p>
           <div className="flex flex-wrap gap-3 justify-center">
             <Link
-              href="/connect"
+              href="/discover"
               className="px-8 py-3.5 rounded-full bg-emerald-500 text-black font-bold hover:bg-emerald-400 transition-colors text-lg"
             >
-              See who&apos;s here
+              Explore the spaces
             </Link>
             <Link
-              href="/discover"
+              href="/connect"
               className="px-8 py-3.5 rounded-full bg-zinc-800 text-zinc-200 font-bold border border-zinc-700 hover:bg-zinc-700 transition-colors text-lg"
             >
-              Explore the spaces
+              Connect — live this July
             </Link>
           </div>
         </div>
