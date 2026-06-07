@@ -86,6 +86,7 @@ export default function ConnectPage() {
     const { data, error } = await supabase
       .from("presence_live")
       .select(PRESENCE_COLUMNS)
+      .gte("staying_until", busanToday())
       .order("staying_until", { ascending: true });
     if (error) {
       setStatus(error.message);
