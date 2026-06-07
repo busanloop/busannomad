@@ -441,7 +441,8 @@ export default function ConnectPage() {
           })}
           {sortedRows.length === 0 && (
             <li className="py-8 text-center text-sm text-zinc-600">
-              No one&apos;s here yet. Tap a station to be the first.
+              <p>No one&apos;s here right now.</p>
+              <p className="mt-1 text-xs">Connect goes live this July with our first nomads — be one of the first to drop a pin.</p>
             </li>
           )}
         </ul>
