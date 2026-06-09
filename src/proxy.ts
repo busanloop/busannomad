@@ -6,7 +6,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 const COOKIE = "rb_code";
 
-export function middleware(req: NextRequest) {
+export function proxy(req: NextRequest) {
   const code = process.env.REVIEW_ACCESS_CODE;
   const { pathname } = req.nextUrl;
 
