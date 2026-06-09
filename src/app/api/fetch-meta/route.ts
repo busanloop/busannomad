@@ -14,6 +14,7 @@ const UA =
 const MAX_HTML = 500_000;
 const HOP_TIMEOUT = 8000;
 const MAX_HOPS = 4;
+const NOTE_MAX = 8000;
 
 // ── SSRF 가드 ────────────────────────────────────────────────────────
 function ipBlocked(ip: string): boolean {
@@ -168,11 +169,84 @@ function parseJsonLd(html: string): Partial<EventMeta> {
           out.loc =
             typeof loc.address === "string" ? loc.address : loc.address.addressLocality || "";
       }
-      if (node.description) out.note = String(node.description).slice(0, 400);
+      if (node.description) out.note = String(node.description).slice(0, NOTE_MAX);
       return out;
     }
   }
   return out;
+}
+
+// ── 본문 설명 추출 (Next.js __NEXT_DATA__ / ProseMirror) ──────────────
+// Luma 등 Next.js SSR 사이트는 행사 본문을 __NEXT_DATA__ JSON 에 담는다.
+// og:description 은 보통 한두 문장으로 잘려 있으므로, 본문이 더 길면 그쪽을 쓴다.
+
+function extractNextData(html: string): unknown | null {
+  const m = html.match(
+    /<script\b[^>]*\bid=["']__NEXT_DATA__["'][^>]*>([\s\S]*?)<\/script>/i,
+  );
+  if (!m) return null;
+  try {
+    return JSON.parse(m[1].trim());
+  } catch {
+    return null;
+  }
+}
+
+// ProseMirror 노드 → 텍스트 (단락/리스트/제목 경계에 줄바꿈)
+function pmToText(node: unknown): string {
+  if (!node || typeof node !== "object") return "";
+  const n = node as { type?: string; text?: string; content?: unknown[] };
+  let out = "";
+  if (typeof n.text === "string") out += n.text;
+  if (Array.isArray(n.content)) for (const c of n.content) out += pmToText(c);
+  if (
+    n.type === "paragraph" ||
+    n.type === "heading" ||
+    n.type === "listItem" ||
+    n.type === "list_item" ||
+    n.type === "horizontal_rule" ||
+    n.type === "hard_break"
+  ) {
+    out += "\n";
+  }
+  return out;
+}
+
+// __NEXT_DATA__ 안에서 description 류 키를 재귀로 모아 가장 긴 텍스트 반환
+function richDescription(html: string): string {
+  const data = extractNextData(html);
+  if (!data) return "";
+  const found: string[] = [];
+  const visit = (v: unknown) => {
+    if (Array.isArray(v)) {
+      v.forEach(visit);
+      return;
+    }
+    if (v && typeof v === "object") {
+      for (const [k, val] of Object.entries(v as Record<string, unknown>)) {
+        if (/description|about|body/i.test(k)) {
+          if (typeof val === "string") found.push(val);
+          else if (val && typeof val === "object") {
+            const t = pmToText(val).trim();
+            if (t) found.push(t);
+          }
+        }
+        visit(val);
+      }
+    }
+  };
+  visit(data);
+  const cleaned = found
+    .map((s) =>
+      s
+        .replace(/\u200b/g, "")
+        .replace(/[ \t]+\n/g, "\n")
+        .replace(/\n{3,}/g, "\n\n")
+        .trim(),
+    )
+    .filter((s) => s.length > 0);
+  cleaned.sort((a, b) => b.length - a.length);
+  return (cleaned[0] || "").slice(0, NOTE_MAX);
 }
 
 // ── 핸들러 ───────────────────────────────────────────────────────────
@@ -206,6 +280,12 @@ export async function POST(req: NextRequest) {
     const html = (await res.text()).slice(0, MAX_HTML);
     const ld = parseJsonLd(html);
 
+    // 본문(긴 설명)이 메타보다 길면 본문을 쓴다
+    const body = richDescription(html);
+    const metaNote =
+      ld.note || pickMeta(html, "og:description") || pickMeta(html, "description") || "";
+    const note = (body.length > metaNote.length ? body : metaNote).slice(0, NOTE_MAX);
+
     const meta: EventMeta = {
       title: ld.title || pickMeta(html, "og:title") || pickTitleTag(html) || "",
       date:
@@ -214,7 +294,7 @@ export async function POST(req: NextRequest) {
         toYmd(pickMeta(html, "event:start_time")) ||
         "",
       loc: ld.loc || "",
-      note: ld.note || pickMeta(html, "og:description") || pickMeta(html, "description") || "",
+      note,
       image: pickMeta(html, "og:image") || "",
       siteName: pickMeta(html, "og:site_name") || target.hostname,
       sourceUrl: target.toString(),
