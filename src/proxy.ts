@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 
-// 공유 액세스 코드 게이트.
-// /review UI 와 /api/fetch-meta 를 REVIEW_ACCESS_CODE 로 보호한다.
-// 코드가 설정돼 있지 않으면 fail-closed (열어두지 않음).
+// 공유 액세스 코드 게이트 (Next 16: middleware → proxy).
+// /review UI, /api/fetch-meta, /api/review/* 를 REVIEW_ACCESS_CODE 로 보호.
+// 코드가 설정돼 있지 않으면 fail-closed.
 
 const COOKIE = "rb_code";
 
@@ -33,5 +33,5 @@ export function proxy(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/review/:path*", "/api/fetch-meta"],
+  matcher: ["/review/:path*", "/api/fetch-meta", "/api/review/:path*"],
 };
