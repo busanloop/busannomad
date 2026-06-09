@@ -46,8 +46,9 @@ export default function ReviewPage() {
     return { y: d.getFullYear(), m: d.getMonth() };
   });
   const [selected, setSelected] = useState<Entry | null>(null);
-  const [modal, setModal] = useState<"new" | null>(null);
+  const [modal, setModal] = useState<"new" | "edit" | null>(null);
   const [prefill, setPrefill] = useState<Partial<Entry> | null>(null);
+  const [editId, setEditId] = useState<string | null>(null);
 
   useEffect(() => {
     listEntries()
@@ -66,11 +67,22 @@ export default function ReviewPage() {
     [entries],
   );
 
-  async function handleSave(form: NewEntry) {
-    const created = await createEntry(form);
-    setEntries((prev) => [created, ...prev]);
+  function closeModal() {
     setModal(null);
     setPrefill(null);
+    setEditId(null);
+  }
+
+  async function handleSave(form: NewEntry) {
+    if (editId) {
+      const upd = await updateEntry(editId, form);
+      setEntries((prev) => prev.map((e) => (e.id === editId ? upd : e)));
+      setSelected(upd);
+    } else {
+      const created = await createEntry(form);
+      setEntries((prev) => [created, ...prev]);
+    }
+    closeModal();
   }
 
   async function handleMarkDraft(id: string) {
@@ -81,7 +93,15 @@ export default function ReviewPage() {
 
   function openNew(dateStr?: string) {
     setPrefill({ cat: "events", date: dateStr || ymd(today) });
+    setEditId(null);
     setModal("new");
+  }
+
+  function openEdit(entry: Entry) {
+    setSelected(null);
+    setPrefill(entry);
+    setEditId(entry.id);
+    setModal("edit");
   }
 
   function setFilterAndMaybeList(f: Filter) {
@@ -176,15 +196,18 @@ export default function ReviewPage() {
       )}
 
       {selected && (
-        <DetailPanel entry={selected} onClose={() => setSelected(null)} onMarkDraft={handleMarkDraft} />
+        <DetailPanel
+          entry={selected}
+          onClose={() => setSelected(null)}
+          onMarkDraft={handleMarkDraft}
+          onEdit={openEdit}
+        />
       )}
-      {modal === "new" && (
+      {modal && (
         <EntryModal
           prefill={prefill}
-          onClose={() => {
-            setModal(null);
-            setPrefill(null);
-          }}
+          isEdit={modal === "edit"}
+          onClose={closeModal}
           onSave={handleSave}
         />
       )}
@@ -352,7 +375,7 @@ function ListView({ entries, onPick }: { entries: Entry[]; onPick: (e: Entry) =>
 }
 
 /* ── Detail panel ─────────────────────────────────────────── */
-function DetailPanel({ entry, onClose, onMarkDraft }: { entry: Entry; onClose: () => void; onMarkDraft: (id: string) => void }) {
+function DetailPanel({ entry, onClose, onMarkDraft, onEdit }: { entry: Entry; onClose: () => void; onMarkDraft: (id: string) => void; onEdit: (e: Entry) => void }) {
   const c = CAT[entry.cat];
   const d = parseYmd(entry.date);
   const dateLabel = `${d.getFullYear()}.${pad(d.getMonth() + 1)}.${pad(d.getDate())} (${DOW_KR[d.getDay()]})`;
@@ -360,7 +383,10 @@ function DetailPanel({ entry, onClose, onMarkDraft }: { entry: Entry; onClose: (
     <>
       <div onClick={onClose} className="fixed inset-0 z-40 bg-black/50" />
       <aside className="fixed right-0 top-0 z-50 h-full w-[min(460px,92vw)] overflow-y-auto border-l border-white/15 bg-zinc-950 p-8 shadow-2xl">
-        <button onClick={onClose} className="absolute right-6 top-5 text-2xl leading-none text-white/40 hover:text-white">×</button>
+        <div className="absolute right-5 top-5 flex items-center gap-3">
+          <button onClick={() => onEdit(entry)} className="rounded-sm border border-white/20 px-3 py-1 font-mono text-[10px] uppercase tracking-wider transition hover:bg-white/10">편집</button>
+          <button onClick={onClose} className="text-2xl leading-none text-white/40 hover:text-white">×</button>
+        </div>
         <div className="mb-4 inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-wider" style={{ color: c.color }}>
           <span className="h-2 w-2 rounded-full" style={{ background: c.color }} />
           {c.label}
@@ -400,7 +426,7 @@ function DetailPanel({ entry, onClose, onMarkDraft }: { entry: Entry; onClose: (
 }
 
 /* ── New entry modal ──────────────────────────────────────── */
-function EntryModal({ prefill, onClose, onSave }: { prefill: Partial<Entry> | null; onClose: () => void; onSave: (e: NewEntry) => void | Promise<void> }) {
+function EntryModal({ prefill, isEdit = false, onClose, onSave }: { prefill: Partial<Entry> | null; isEdit?: boolean; onClose: () => void; onSave: (e: NewEntry) => void | Promise<void> }) {
   const [cat, setCat] = useState<Cat>(prefill?.cat ?? "events");
   const [url, setUrl] = useState(prefill?.src ?? "");
   const [title, setTitle] = useState(prefill?.title ?? "");
@@ -463,8 +489,8 @@ function EntryModal({ prefill, onClose, onSave }: { prefill: Partial<Entry> | nu
     <div onClick={(e) => e.target === e.currentTarget && onClose()} className="fixed inset-0 z-[60] flex items-start justify-center overflow-y-auto bg-black/55 p-6 sm:p-12">
       <div className="relative w-[min(580px,100%)] rounded-md border border-white/15 bg-zinc-950 p-8 shadow-2xl">
         <button onClick={onClose} className="absolute right-6 top-5 text-2xl leading-none text-white/40 hover:text-white">×</button>
-        <h3 style={{ fontFamily: serif }} className="text-2xl font-medium">새 기록</h3>
-        <p className="mb-6 mt-1 font-mono text-[11px] text-white/50">참석한 행사를 남겨두면 나중에 기사 쓸 때 헷갈리지 않는다.</p>
+        <h3 style={{ fontFamily: serif }} className="text-2xl font-medium">{isEdit ? "기록 편집" : "새 기록"}</h3>
+        <p className="mb-6 mt-1 font-mono text-[11px] text-white/50">{isEdit ? "내용을 고치고 저장하면 바로 반영된다." : "참석한 행사를 남겨두면 나중에 기사 쓸 때 헷갈리지 않는다."}</p>
 
         <Field label="Category">
           <div className="flex gap-2">
