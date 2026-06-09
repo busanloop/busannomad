@@ -404,6 +404,12 @@ function DetailPanel({ entry, onClose, onMarkDraft, onEdit }: { entry: Entry; on
               <span style={{ color: STATUS[entry.article].color }}>{STATUS[entry.article].label}</span>
             </span>
           )}
+          {entry.cat === "events" && entry.publishedToNomads && (
+            <span>
+              <b className="mr-2 inline-block min-w-14 text-white/90 font-medium">공개</b>
+              <span style={{ color: "#5FB07A" }}>부산 노마드에 공개됨</span>
+            </span>
+          )}
           {c.rate && entry.rating ? (
             <span><b className="mr-2 inline-block min-w-14 text-white/90 font-medium">Rating</b>{"●".repeat(entry.rating)}{"○".repeat(5 - entry.rating)}</span>
           ) : null}
@@ -438,6 +444,7 @@ function EntryModal({ prefill, isEdit = false, onClose, onSave }: { prefill: Par
   const [artUrl, setArtUrl] = useState(prefill?.articleUrl ?? "");
   const [rating, setRating] = useState<string>(prefill?.rating ? String(prefill.rating) : "");
   const [image, setImage] = useState(prefill?.image ?? "");
+  const [pubNomads, setPubNomads] = useState(prefill?.publishedToNomads ?? false);
   const [fetching, setFetching] = useState(false);
   const [msg, setMsg] = useState("");
   const [saving, setSaving] = useState(false);
@@ -481,6 +488,7 @@ function EntryModal({ prefill, isEdit = false, onClose, onSave }: { prefill: Par
       attendees: cat === "events" ? att.split(",").map((s) => s.trim()).filter(Boolean) : [],
       article: cat === "events" ? status : null,
       articleUrl: cat === "events" ? artUrl.trim() : "",
+      publishedToNomads: cat === "events" ? pubNomads : false,
     });
     setSaving(false);
   }
@@ -559,6 +567,22 @@ function EntryModal({ prefill, isEdit = false, onClose, onSave }: { prefill: Par
                 <input className={input} placeholder="https://..." value={artUrl} onChange={(e) => setArtUrl(e.target.value)} />
               </Field>
             )}
+            <button
+              type="button"
+              onClick={() => setPubNomads((v) => !v)}
+              className="mb-4 flex w-full items-center gap-3 rounded-md border border-white/15 bg-white/5 px-3 py-3 text-left transition hover:border-white/30"
+            >
+              <span
+                className="grid h-5 w-5 shrink-0 place-items-center rounded border text-[11px]"
+                style={pubNomads ? { background: "#5FB07A", borderColor: "#5FB07A", color: "#18181b" } : { borderColor: "rgba(255,255,255,.3)" }}
+              >
+                {pubNomads ? "✓" : ""}
+              </span>
+              <span>
+                <span className="block text-[13px] text-white/90">부산 노마드에 공개</span>
+                <span className="block font-mono text-[10px] text-white/40">BusanNomads Discover에 노출 (다가오는 행사만)</span>
+              </span>
+            </button>
           </>
         )}
 

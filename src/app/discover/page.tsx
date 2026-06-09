@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { TravelSection } from "./travel-section";
 import { MeetSection } from "./meet-section";
 import { CourseSection } from "./course-section";
+import { EventsSection } from "./events-section";
 
 type Category = "All" | "Learn" | "Work" | "Play";
 
@@ -105,6 +106,7 @@ export default function DiscoverPage() {
   useEffect(() => {
     try {
       const raw = localStorage.getItem("nomadloop_coupons");
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- 마운트 후 클라이언트 전용 localStorage 읽기 (하이드레이션 안전 패턴)
       if (raw) setCoupon(JSON.parse(raw));
     } catch {}
   }, []);
@@ -204,6 +206,11 @@ export default function DiscoverPage() {
             </div>
           </div>
         ))}
+      </div>
+
+      {/* Events in Busan (Review Board 공개분) */}
+      <div className="px-6 py-6">
+        <EventsSection />
       </div>
 
       {/* Nomad Courses */}
