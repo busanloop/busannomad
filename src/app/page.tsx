@@ -64,6 +64,14 @@ export default function Home() {
               Connect — live this July
             </Link>
           </div>
+          <div className="mt-4">
+            <Link
+              href="/groups"
+              className="text-sm text-zinc-400 hover:text-emerald-400 transition-colors"
+            >
+              Bringing a group? &rarr;
+            </Link>
+          </div>
         </div>
       </section>
 
@@ -148,12 +156,12 @@ export default function Home() {
         <p className="text-sm text-zinc-400 mb-1">
           Bringing a team or group to Busan?
         </p>
-        <a
-          href="mailto:busannomads@gmail.com"
+        <Link
+          href="/groups"
           className="text-emerald-400 hover:text-emerald-300 transition-colors font-medium"
         >
-          busannomads@gmail.com
-        </a>
+          See what we offer for groups &rarr;
+        </Link>
         <div className="mt-8">
           <Link
             href="/race"
