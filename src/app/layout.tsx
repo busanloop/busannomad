@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 const SITE_URL = "https://busannomads.com";
 const TITLE = "BusanNomads — Learn · Work · Play";
 const DESCRIPTION =
-  "One pass. Three verified spaces. Coworking, fitness, and a cafe across Busan. Learn · Work · Play for digital nomads.";
+  "In Busan, you don't work alone. We connect digital nomads through verified spaces — coworking, fitness, café. For individuals and group worktrips.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
